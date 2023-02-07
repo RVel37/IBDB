@@ -3,6 +3,8 @@ box::use(
   app/logic/ui_globals[ExplorePageContents,footerHTML,DownloadPageContents],
   app/logic/utils,
   app/logic/data[deg_contrasts],
+  #server code
+  
 )
 
 box::use(
@@ -18,8 +20,8 @@ ui <- function(id){
   tagList(
     
     navbarPage(
-      title = "LiverDB",
-      id = "liverdb",
+      title = "IBD-DB",
+      id = "IBD-DB",
       theme = bslib::bs_theme(bootswatch = "lumen"),
       tabPanel(
         title = "Home",
@@ -60,8 +62,7 @@ ui <- function(id){
 server <- function(id) {
       moduleServer(
         id, 
-       
         function(input, output, session) {
-          print("server part works!")
+          
         })
 }
