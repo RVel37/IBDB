@@ -15,11 +15,10 @@ server <- function(id) {
     function(input, output, session) {
 
 
-#Contrast selector
+# reactive contrast selector
 output$UIselectContrast <- renderUI({
   study <- input$selectStudy
-
-cont_labels <- deg_contrasts %>%
+  cont_labels <- deg_contrasts %>%
     dplyr::filter(study_id == study) %>% 
     unite("contrast", c("numerator", "denominator"), sep = " vs. ") %>% 
     pull(contrast)

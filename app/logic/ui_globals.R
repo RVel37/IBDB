@@ -16,7 +16,7 @@ box::use(
     #raw data
     app_data,
     #processed data
-    exps,degs,metadata,deg_contrasts,eres],
+    degs135,degs126],
   
   app/logic/utils[makeHeaders,helpButton]
 )

@@ -1,11 +1,12 @@
 box::use(
+shiny[renderPlot,req],
 plotly[renderPlotly, ggplotly],
-dplyr[...],
-ggplot2[ggupset,ggplot,...],
+dplyr[...], grid[gpar],
+ggplot2[ggplot],UpSetR[...],
 )
 
 box::use(
-  app/logic/data[exps,degs,metadata,eres],
+  app/logic/data,
 )
 
 #' @export
@@ -248,11 +249,39 @@ output$upset <- renderPlot({
   
   m <- make_comb_mat(set2genes)
   
-  ggupset(m, nsets = length(all_set_names),
-          sets = all_set_names,
-          pointSize = 0.5,
-          setOrder = "freq",
-          textSize = 10)
-          })
+  
+  # Comparison
+  output$upset <- renderPlot({
+    req(input$upsetSelect)
+    deg_type <- input$upsetSelect
+    studies <- metadata %>% pull(study_id) %>% unique()
+    
+    tolist <- lapply(studies, function(study) {
+      degs[[study]] %>%
+        dplyr::filter(!is.na(FDR) & FDR < .01 & abs(logFC) > 1) %>%
+        mutate(
+          group = case_when(
+            logFC > 0 ~ "Over-expressed",
+            TRUE ~ "Under-expressed"
+          ),
+          set_name = paste0(study, "\n", numerator, " vs. ", denominator)
+        ) %>%
+        dplyr::filter(group == deg_type) %>% 
+        select(gene_name, set_name)
+    }) %>% bind_rows()
+    
+    all_set_names <- tolist %>% pull(set_name) %>% unique()
+    names(all_set_names) <- all_set_names
+    set2genes <- lapply(all_set_names, function(set_name){
+      tolist %>% 
+        dplyr::filter(set_name == !!set_name) %>% 
+        pull(gene_name)
+    })
+    
+    m <- make_comb_mat(set2genes)
+    
+    UpSet(m, row_names_gp = grid::gpar(fontsize = 10))
+  })
+ })
 })
 }

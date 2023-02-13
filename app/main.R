@@ -13,7 +13,10 @@ box::use(
   
   #view folder
   app/view/memory,
-  app/view/layout,
+  app/view/UI,
+  app/view/DEGresults,
+  app/view/downloads,
+  app/view/plots,
 )
 
 #' @export
@@ -21,7 +24,7 @@ ui <- function(id) {
   ns <- NS(id)
   
   bootstrapPage(
-  layout$ui(ns("layout")),
+  UI$ui(ns("UI")),
   )
 }
 
@@ -29,9 +32,10 @@ ui <- function(id) {
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
 
-     data <- readRDS("app/app_data.rds")
+      #raw data
+    app_data <- readRDS("app/data/app_data.rds")
     
-    memory$server("memory")
-    layout$server("layout")
+    memory$mem_server("memory")
+    DEGresults$server("DEGs")
   })
 }
