@@ -8,12 +8,14 @@ box::use(
 box::use(
   #logic folder
   app/logic/data,
+  #app/test/dataTransform,
   app/logic/ui_globals,
   app/logic/utils,
   
   #view folder
   app/view/memory,
   app/view/UI,
+  #app/test/testserver,
   app/view/DEGresults,
   app/view/downloads,
   app/view/plots,
@@ -28,13 +30,18 @@ ui <- function(id) {
   )
 }
 
+
+
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
 
-      #raw data
+    #Raw data
     app_data <- readRDS("app/data/app_data.rds")
+   
     
+    #SERVER MODULES
+    #testserver$server("server", data = app_data)
     memory$mem_server("memory")
     DEGresults$server("DEGs")
   })

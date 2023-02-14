@@ -16,6 +16,21 @@ server <- function(id) {
     
     function(input, output, session) {
       
+      GEO_BASE <- "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="
+      GENECARDS_BASE <- "https://www.genecards.org/cgi-bin/carddisp.pl?gene="
+      S3_HTTPS <- "https://liverdb-data.s3.amazonaws.com/"
+      
+      app_data <- readRDS("app_data.rds")
+      
+      exps <- app_data[["exps"]]
+      exps126 <- exps[["GSE126848"]]
+      exps135 <- exps[["GSE135251"]] 
+      
+      degs <- app_data[["degs"]]
+      degs126 <- degs[["GSE126848"]]
+      degs135 <- degs[["GSE135251"]]
+      
+      
       # reactive contrast selector
       output$UIselectContrast <- renderUI({
         study <- input$selectStudy
@@ -80,21 +95,15 @@ server <- function(id) {
         
         if(study == "GSE126848"){
           gene <- degs126 %>%
-            dplyr::filter(numerator == pair[[1]]) %>%
+            dplyr::filter(numerator == pair[[1]] & denominator == pair[[2]])%>%
             dplyr::filter(row_number() == selectedRow) %>%
             pull(gene_name)
         } else if (study == "GSE135251"){
           gene <- degs135 %>%
-            dplyr::filter(numerator == pair[[1]]) %>% 
+            dplyr::filter(numerator == pair[[1]] & denominator == pair[[2]])%>% 
             dplyr::filter(row_number() == selectedRow) %>%
             pull(gene_name)
         }
-  
-        #gene <- degs[[study]] %>%
-          #dplyr::filter(numerator == pair[[1]] & denominator == pair[[2]]) %>% 
-         # dplyr::filter(row_number() == selectedRow) %>%
-         # pull(gene_name)
       })
-        
   })   
 }
