@@ -1,0 +1,19 @@
+// Nextflow (nf-core) RNA-seq analysis starting from SRA IDs
+
+conda install -c bioconda nf-core 
+
+nf-core --help
+nf-core list //lists available pipelines
+
+// pulling allows you to store a cached version in your conda/mamba environment -- so even if the pipelines are updated in github, the same version is used for this analysis. Version is also specified when running the pipelines for best reproducibility.
+
+nextflow pull nf-core/fetchngs
+nextflow pull nf-core/rnaseq
+
+nextflow run nf-core/fetchngs --input IDs.csv --outdir out-nfcore -profile docker --nf_core_pipeline rnaseq --max_memory 7GB -resume
+
+// profile can be set to docker, singularity or conda
+// to find out max_memory available run nproc or lcspu
+// resume ensures previously run and successful tasks are cached
+
+nextflow run nf-core/rnaseq --input samplesheet.csv --aligner star_salmon --outdir results --genomeGRCh38 -profile docker -resume 
