@@ -1,4 +1,5 @@
 library(data.table)
+library(dplyr)
 
 gse112 <- readLines('gse112.txt')
 gse123 <- readLines('gse123.txt')
@@ -130,4 +131,24 @@ for (letter in letters[1:4]) {
 output836 <- rbindlist(outputlist)
 colnames(output836) <- c("SRR_ID","condition")
 output836 <- unique(output836, by="SRR_ID")
+
+
+#-------------------------------------------
+#Add strandedness
+
+output123 <- output123 %>% mutate (strandedness = "unstranded")
+output112 <- output112 %>% mutate (strandedness = "reverse")
+output836 <- output836 %>% mutate (strandedness = "reverse")
+
+outputall <- rbind(output112,output123, output836)
+colnames(outputall) <- c("sample_id", "condition","strandedness")
+
+#-------------------------------------------
+#Join onto metadata.csv
+ 
+metadata <- read.csv('metadata.csv')
+metadata <- left_join(metadata, outputall, by='sample_id')
+
+write.csv(metadata, file='metadata.csv', row.names=TRUE)
+
 
