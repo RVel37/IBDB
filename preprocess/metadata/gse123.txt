@@ -1,0 +1,222 @@
+### All_Samples ###
+# Generate a gene matrix
+# Unstranded
+paste SRR8263760_ReadsPerGene.out.tab SRR8263761_ReadsPerGene.out.tab SRR8263762_ReadsPerGene.out.tab SRR8263763_ReadsPerGene.out.tab SRR8263764_ReadsPerGene.out.tab SRR8263765_ReadsPerGene.out.tab SRR8263766_ReadsPerGene.out.tab SRR8263767_ReadsPerGene.out.tab SRR8263768_ReadsPerGene.out.tab SRR8263751_ReadsPerGene.out.tab SRR8263752_ReadsPerGene.out.tab SRR8263753_ReadsPerGene.out.tab SRR8263754_ReadsPerGene.out.tab SRR8263755_ReadsPerGene.out.tab SRR8263756_ReadsPerGene.out.tab SRR8263757_ReadsPerGene.out.tab SRR8263758_ReadsPerGene.out.tab SRR8263759_ReadsPerGene.out.tab SRR8263769_ReadsPerGene.out.tab SRR8263770_ReadsPerGene.out.tab SRR8263771_ReadsPerGene.out.tab SRR8263772_ReadsPerGene.out.tab SRR8263773_ReadsPerGene.out.tab SRR8263774_ReadsPerGene.out.tab SRR8263775_ReadsPerGene.out.tab SRR8263776_ReadsPerGene.out.tab SRR8263777_ReadsPerGene.out.tab SRR8263778_ReadsPerGene.out.tab | cut -f1,2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62,66,70,74,78,82,86,90,94,98,102,106,110,114 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_Unstranded-All_Samples.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_Unstranded-All_Samples.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10")
+group <- factor(c(1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE123141-Macrophage-Unstranded-All_Samples-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE123141-Macrophage-Unstranded-All_Samples-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE123141-Macrophage-Unstranded-All_Samples-TPM.txt", sep="\t")
+
+q()
+
+
+### Crohn_vs_Control ###
+# Generate a gene matrix
+# Unstranded
+paste SRR8263760_ReadsPerGene.out.tab SRR8263761_ReadsPerGene.out.tab SRR8263762_ReadsPerGene.out.tab SRR8263763_ReadsPerGene.out.tab SRR8263764_ReadsPerGene.out.tab SRR8263765_ReadsPerGene.out.tab SRR8263766_ReadsPerGene.out.tab SRR8263767_ReadsPerGene.out.tab SRR8263768_ReadsPerGene.out.tab SRR8263751_ReadsPerGene.out.tab SRR8263752_ReadsPerGene.out.tab SRR8263753_ReadsPerGene.out.tab SRR8263754_ReadsPerGene.out.tab SRR8263755_ReadsPerGene.out.tab SRR8263756_ReadsPerGene.out.tab SRR8263757_ReadsPerGene.out.tab SRR8263758_ReadsPerGene.out.tab SRR8263759_ReadsPerGene.out.tab | cut -f1,2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62,66,70 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_Unstranded-Crohn_vs_Control.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_Unstranded-Crohn_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9")
+group <- factor(c(1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE123141-Macrophage-Unstranded-Crohn_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE123141-Macrophage-Unstranded-Crohn_vs_Control-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE123141-Macrophage-Unstranded-Crohn_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE123141-Macrophage-Unstranded-Crohn_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### UC_vs_Control ###
+# Generate a gene matrix
+# Unstranded
+paste SRR8263760_ReadsPerGene.out.tab SRR8263761_ReadsPerGene.out.tab SRR8263762_ReadsPerGene.out.tab SRR8263763_ReadsPerGene.out.tab SRR8263764_ReadsPerGene.out.tab SRR8263765_ReadsPerGene.out.tab SRR8263766_ReadsPerGene.out.tab SRR8263767_ReadsPerGene.out.tab SRR8263768_ReadsPerGene.out.tab SRR8263769_ReadsPerGene.out.tab SRR8263770_ReadsPerGene.out.tab SRR8263771_ReadsPerGene.out.tab SRR8263772_ReadsPerGene.out.tab SRR8263773_ReadsPerGene.out.tab SRR8263774_ReadsPerGene.out.tab SRR8263775_ReadsPerGene.out.tab SRR8263776_ReadsPerGene.out.tab SRR8263777_ReadsPerGene.out.tab SRR8263778_ReadsPerGene.out.tab | cut -f1,2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62,66,70,74 | tail -n +5 > tmpfile | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_Unstranded-UC_vs_Control.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_Unstranded-UC_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10")
+group <- factor(c(1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE123141-Macrophage-Unstranded-UC_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE123141-Macrophage-Unstranded-UC_vs_Control-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE123141-Macrophage-Unstranded-UC_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE123141-Macrophage-Unstranded-UC_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+### UC_vs_Crohn ###
+# Generate a gene matrix
+# Unstranded
+paste SRR8263751_ReadsPerGene.out.tab SRR8263752_ReadsPerGene.out.tab SRR8263753_ReadsPerGene.out.tab SRR8263754_ReadsPerGene.out.tab SRR8263755_ReadsPerGene.out.tab SRR8263756_ReadsPerGene.out.tab SRR8263757_ReadsPerGene.out.tab SRR8263758_ReadsPerGene.out.tab SRR8263759_ReadsPerGene.out.tab SRR8263769_ReadsPerGene.out.tab SRR8263770_ReadsPerGene.out.tab SRR8263771_ReadsPerGene.out.tab SRR8263772_ReadsPerGene.out.tab SRR8263773_ReadsPerGene.out.tab SRR8263774_ReadsPerGene.out.tab SRR8263775_ReadsPerGene.out.tab SRR8263776_ReadsPerGene.out.tab SRR8263777_ReadsPerGene.out.tab SRR8263778_ReadsPerGene.out.tab | cut -f1,2,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62,66,70,74 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_Unstranded-UC_vs_Crohn.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_Unstranded-UC_vs_Crohn.txt", header=F, row.names=1)
+colnames(x)<-c("Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10")
+group <- factor(c(1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)

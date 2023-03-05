@@ -1,0 +1,1042 @@
+### Crohn_vs_Control ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868715_ReadsPerGene.out.tab SRR6868716_ReadsPerGene.out.tab SRR6868717_ReadsPerGene.out.tab SRR6868718_ReadsPerGene.out.tab SRR6868719_ReadsPerGene.out.tab SRR6868720_ReadsPerGene.out.tab SRR6868721_ReadsPerGene.out.tab SRR6868722_ReadsPerGene.out.tab SRR6868723_ReadsPerGene.out.tab SRR6868724_ReadsPerGene.out.tab SRR6868725_ReadsPerGene.out.tab SRR6868726_ReadsPerGene.out.tab SRR6868540_ReadsPerGene.out.tab SRR6868541_ReadsPerGene.out.tab SRR6868542_ReadsPerGene.out.tab SRR6868544_ReadsPerGene.out.tab SRR6868545_ReadsPerGene.out.tab SRR6868546_ReadsPerGene.out.tab SRR6868557_ReadsPerGene.out.tab SRR6868559_ReadsPerGene.out.tab SRR6868560_ReadsPerGene.out.tab SRR6868569_ReadsPerGene.out.tab SRR6868570_ReadsPerGene.out.tab SRR6868571_ReadsPerGene.out.tab SRR6868572_ReadsPerGene.out.tab SRR6868573_ReadsPerGene.out.tab SRR6868574_ReadsPerGene.out.tab SRR6868575_ReadsPerGene.out.tab SRR6868576_ReadsPerGene.out.tab SRR6868577_ReadsPerGene.out.tab SRR6868578_ReadsPerGene.out.tab SRR6868580_ReadsPerGene.out.tab SRR6868581_ReadsPerGene.out.tab SRR6868582_ReadsPerGene.out.tab SRR6868585_ReadsPerGene.out.tab SRR6868587_ReadsPerGene.out.tab SRR6868590_ReadsPerGene.out.tab SRR6868604_ReadsPerGene.out.tab SRR6868605_ReadsPerGene.out.tab SRR6868606_ReadsPerGene.out.tab SRR6868608_ReadsPerGene.out.tab SRR6868609_ReadsPerGene.out.tab SRR6868610_ReadsPerGene.out.tab SRR6868621_ReadsPerGene.out.tab SRR6868622_ReadsPerGene.out.tab SRR6868623_ReadsPerGene.out.tab SRR6868636_ReadsPerGene.out.tab SRR6868637_ReadsPerGene.out.tab SRR6868639_ReadsPerGene.out.tab SRR6868650_ReadsPerGene.out.tab SRR6868651_ReadsPerGene.out.tab SRR6868652_ReadsPerGene.out.tab SRR6868654_ReadsPerGene.out.tab SRR6868655_ReadsPerGene.out.tab SRR6868666_ReadsPerGene.out.tab SRR6868667_ReadsPerGene.out.tab SRR6868668_ReadsPerGene.out.tab SRR6868669_ReadsPerGene.out.tab SRR6868670_ReadsPerGene.out.tab SRR6868671_ReadsPerGene.out.tab SRR6868683_ReadsPerGene.out.tab SRR6868684_ReadsPerGene.out.tab SRR6868687_ReadsPerGene.out.tab SRR6868688_ReadsPerGene.out.tab SRR6868689_ReadsPerGene.out.tab SRR6868698_ReadsPerGene.out.tab SRR6868700_ReadsPerGene.out.tab SRR6868701_ReadsPerGene.out.tab SRR6868702_ReadsPerGene.out.tab SRR6868713_ReadsPerGene.out.tab SRR6868714_ReadsPerGene.out.tab SRR6868741_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Crohn_vs_Control.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Crohn_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Control.10","Control.11","Control.12","Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","Crohn.10","Crohn.11","Crohn.12","Crohn.13","Crohn.14","Crohn.15","Crohn.16","Crohn.17","Crohn.18","Crohn.19","Crohn.20","Crohn.21","Crohn.22","Crohn.23","Crohn.24","Crohn.25","Crohn.26","Crohn.27","Crohn.28","Crohn.29","Crohn.30","Crohn.31","Crohn.32","Crohn.33","Crohn.34","Crohn.35","Crohn.36","Crohn.37","Crohn.38","Crohn.39","Crohn.40","Crohn.41","Crohn.42","Crohn.43","Crohn.44","Crohn.45","Crohn.46","Crohn.47","Crohn.48","Crohn.49","Crohn.50","Crohn.51","Crohn.52","Crohn.53","Crohn.54","Crohn.55","Crohn.56","Crohn.57","Crohn.58","Crohn.59","Crohn.60")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Crohn_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Crohn_vs_Control-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Crohn_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Crohn_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Oligoarticular_JIA_vs_Control ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868715_ReadsPerGene.out.tab SRR6868716_ReadsPerGene.out.tab SRR6868717_ReadsPerGene.out.tab SRR6868718_ReadsPerGene.out.tab SRR6868719_ReadsPerGene.out.tab SRR6868720_ReadsPerGene.out.tab SRR6868721_ReadsPerGene.out.tab SRR6868722_ReadsPerGene.out.tab SRR6868723_ReadsPerGene.out.tab SRR6868724_ReadsPerGene.out.tab SRR6868725_ReadsPerGene.out.tab SRR6868726_ReadsPerGene.out.tab SRR6868550_ReadsPerGene.out.tab SRR6868551_ReadsPerGene.out.tab SRR6868554_ReadsPerGene.out.tab SRR6868555_ReadsPerGene.out.tab SRR6868565_ReadsPerGene.out.tab SRR6868566_ReadsPerGene.out.tab SRR6868583_ReadsPerGene.out.tab SRR6868584_ReadsPerGene.out.tab SRR6868596_ReadsPerGene.out.tab SRR6868598_ReadsPerGene.out.tab SRR6868599_ReadsPerGene.out.tab SRR6868601_ReadsPerGene.out.tab SRR6868614_ReadsPerGene.out.tab SRR6868617_ReadsPerGene.out.tab SRR6868618_ReadsPerGene.out.tab SRR6868631_ReadsPerGene.out.tab SRR6868632_ReadsPerGene.out.tab SRR6868633_ReadsPerGene.out.tab SRR6868635_ReadsPerGene.out.tab SRR6868642_ReadsPerGene.out.tab SRR6868643_ReadsPerGene.out.tab SRR6868644_ReadsPerGene.out.tab SRR6868646_ReadsPerGene.out.tab SRR6868648_ReadsPerGene.out.tab SRR6868659_ReadsPerGene.out.tab SRR6868662_ReadsPerGene.out.tab SRR6868673_ReadsPerGene.out.tab SRR6868674_ReadsPerGene.out.tab SRR6868676_ReadsPerGene.out.tab SRR6868677_ReadsPerGene.out.tab SRR6868678_ReadsPerGene.out.tab SRR6868679_ReadsPerGene.out.tab SRR6868680_ReadsPerGene.out.tab SRR6868681_ReadsPerGene.out.tab SRR6868693_ReadsPerGene.out.tab SRR6868694_ReadsPerGene.out.tab SRR6868695_ReadsPerGene.out.tab SRR6868697_ReadsPerGene.out.tab SRR6868706_ReadsPerGene.out.tab SRR6868709_ReadsPerGene.out.tab SRR6868711_ReadsPerGene.out.tab SRR6868732_ReadsPerGene.out.tab SRR6868734_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Oligoarticular_JIA_vs_Control.txt
+
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Oligoarticular_JIA_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Control.10","Control.11","Control.12","Oligoarticular_JIA.1","Oligoarticular_JIA.2","Oligoarticular_JIA.3","Oligoarticular_JIA.4","Oligoarticular_JIA.5","Oligoarticular_JIA.6","Oligoarticular_JIA.7","Oligoarticular_JIA.8","Oligoarticular_JIA.9","Oligoarticular_JIA.10","Oligoarticular_JIA.11","Oligoarticular_JIA.12","Oligoarticular_JIA.13","Oligoarticular_JIA.14","Oligoarticular_JIA.15","Oligoarticular_JIA.16","Oligoarticular_JIA.17","Oligoarticular_JIA.18","Oligoarticular_JIA.19","Oligoarticular_JIA.20","Oligoarticular_JIA.21","Oligoarticular_JIA.22","Oligoarticular_JIA.23","Oligoarticular_JIA.24","Oligoarticular_JIA.25","Oligoarticular_JIA.26","Oligoarticular_JIA.27","Oligoarticular_JIA.28","Oligoarticular_JIA.29","Oligoarticular_JIA.30","Oligoarticular_JIA.31","Oligoarticular_JIA.32","Oligoarticular_JIA.33","Oligoarticular_JIA.34","Oligoarticular_JIA.35","Oligoarticular_JIA.36","Oligoarticular_JIA.37","Oligoarticular_JIA.38","Oligoarticular_JIA.39","Oligoarticular_JIA.40","Oligoarticular_JIA.41","Oligoarticular_JIA.42","Oligoarticular_JIA.43")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_Control-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Polyarticular_JIA_vs_Control ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868715_ReadsPerGene.out.tab SRR6868716_ReadsPerGene.out.tab SRR6868717_ReadsPerGene.out.tab SRR6868718_ReadsPerGene.out.tab SRR6868719_ReadsPerGene.out.tab SRR6868720_ReadsPerGene.out.tab SRR6868721_ReadsPerGene.out.tab SRR6868722_ReadsPerGene.out.tab SRR6868723_ReadsPerGene.out.tab SRR6868724_ReadsPerGene.out.tab SRR6868725_ReadsPerGene.out.tab SRR6868726_ReadsPerGene.out.tab SRR6868547_ReadsPerGene.out.tab SRR6868548_ReadsPerGene.out.tab SRR6868549_ReadsPerGene.out.tab SRR6868556_ReadsPerGene.out.tab SRR6868561_ReadsPerGene.out.tab SRR6868562_ReadsPerGene.out.tab SRR6868568_ReadsPerGene.out.tab SRR6868592_ReadsPerGene.out.tab SRR6868593_ReadsPerGene.out.tab SRR6868594_ReadsPerGene.out.tab SRR6868595_ReadsPerGene.out.tab SRR6868600_ReadsPerGene.out.tab SRR6868602_ReadsPerGene.out.tab SRR6868603_ReadsPerGene.out.tab SRR6868611_ReadsPerGene.out.tab SRR6868612_ReadsPerGene.out.tab SRR6868619_ReadsPerGene.out.tab SRR6868624_ReadsPerGene.out.tab SRR6868625_ReadsPerGene.out.tab SRR6868626_ReadsPerGene.out.tab SRR6868627_ReadsPerGene.out.tab SRR6868628_ReadsPerGene.out.tab SRR6868629_ReadsPerGene.out.tab SRR6868630_ReadsPerGene.out.tab SRR6868640_ReadsPerGene.out.tab SRR6868647_ReadsPerGene.out.tab SRR6868656_ReadsPerGene.out.tab SRR6868657_ReadsPerGene.out.tab SRR6868658_ReadsPerGene.out.tab SRR6868672_ReadsPerGene.out.tab SRR6868690_ReadsPerGene.out.tab SRR6868691_ReadsPerGene.out.tab SRR6868692_ReadsPerGene.out.tab SRR6868703_ReadsPerGene.out.tab SRR6868704_ReadsPerGene.out.tab SRR6868705_ReadsPerGene.out.tab SRR6868708_ReadsPerGene.out.tab SRR6868712_ReadsPerGene.out.tab SRR6868727_ReadsPerGene.out.tab SRR6868728_ReadsPerGene.out.tab SRR6868729_ReadsPerGene.out.tab SRR6868730_ReadsPerGene.out.tab SRR6868731_ReadsPerGene.out.tab SRR6868738_ReadsPerGene.out.tab SRR6868739_ReadsPerGene.out.tab SRR6868740_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Polyarticular_JIA_vs_Control.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Polyarticular_JIA_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Control.10","Control.11","Control.12","Polyarticular_JIA.1","Polyarticular_JIA.2","Polyarticular_JIA.3","Polyarticular_JIA.4","Polyarticular_JIA.5","Polyarticular_JIA.6","Polyarticular_JIA.7","Polyarticular_JIA.8","Polyarticular_JIA.9","Polyarticular_JIA.10","Polyarticular_JIA.11","Polyarticular_JIA.12","Polyarticular_JIA.13","Polyarticular_JIA.14","Polyarticular_JIA.15","Polyarticular_JIA.16","Polyarticular_JIA.17","Polyarticular_JIA.18","Polyarticular_JIA.19","Polyarticular_JIA.20","Polyarticular_JIA.21","Polyarticular_JIA.22","Polyarticular_JIA.23","Polyarticular_JIA.24","Polyarticular_JIA.25","Polyarticular_JIA.26","Polyarticular_JIA.27","Polyarticular_JIA.28","Polyarticular_JIA.29","Polyarticular_JIA.30","Polyarticular_JIA.31","Polyarticular_JIA.32","Polyarticular_JIA.33","Polyarticular_JIA.34","Polyarticular_JIA.35","Polyarticular_JIA.36","Polyarticular_JIA.37","Polyarticular_JIA.38","Polyarticular_JIA.39","Polyarticular_JIA.40","Polyarticular_JIA.41","Polyarticular_JIA.42","Polyarticular_JIA.43","Polyarticular_JIA.44","Polyarticular_JIA.45","Polyarticular_JIA.46")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Control-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Systemic_JIA_vs_Control ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868715_ReadsPerGene.out.tab SRR6868716_ReadsPerGene.out.tab SRR6868717_ReadsPerGene.out.tab SRR6868718_ReadsPerGene.out.tab SRR6868719_ReadsPerGene.out.tab SRR6868720_ReadsPerGene.out.tab SRR6868721_ReadsPerGene.out.tab SRR6868722_ReadsPerGene.out.tab SRR6868723_ReadsPerGene.out.tab SRR6868724_ReadsPerGene.out.tab SRR6868725_ReadsPerGene.out.tab SRR6868726_ReadsPerGene.out.tab SRR6868552_ReadsPerGene.out.tab SRR6868553_ReadsPerGene.out.tab SRR6868563_ReadsPerGene.out.tab SRR6868564_ReadsPerGene.out.tab SRR6868567_ReadsPerGene.out.tab SRR6868597_ReadsPerGene.out.tab SRR6868613_ReadsPerGene.out.tab SRR6868615_ReadsPerGene.out.tab SRR6868616_ReadsPerGene.out.tab SRR6868634_ReadsPerGene.out.tab SRR6868641_ReadsPerGene.out.tab SRR6868645_ReadsPerGene.out.tab SRR6868649_ReadsPerGene.out.tab SRR6868660_ReadsPerGene.out.tab SRR6868661_ReadsPerGene.out.tab SRR6868663_ReadsPerGene.out.tab SRR6868664_ReadsPerGene.out.tab SRR6868675_ReadsPerGene.out.tab SRR6868682_ReadsPerGene.out.tab SRR6868696_ReadsPerGene.out.tab SRR6868707_ReadsPerGene.out.tab SRR6868710_ReadsPerGene.out.tab SRR6868733_ReadsPerGene.out.tab SRR6868735_ReadsPerGene.out.tab SRR6868736_ReadsPerGene.out.tab SRR6868737_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Systemic_JIA_vs_Control.txt
+
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Systemic_JIA_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Control.10","Control.11","Control.12","Systemic_JIA.1","Systemic_JIA.2","Systemic_JIA.3","Systemic_JIA.4","Systemic_JIA.5","Systemic_JIA.6","Systemic_JIA.7","Systemic_JIA.8","Systemic_JIA.9","Systemic_JIA.10","Systemic_JIA.11","Systemic_JIA.12","Systemic_JIA.13","Systemic_JIA.14","Systemic_JIA.15","Systemic_JIA.16","Systemic_JIA.17","Systemic_JIA.18","Systemic_JIA.19","Systemic_JIA.20","Systemic_JIA.21","Systemic_JIA.22","Systemic_JIA.23","Systemic_JIA.24","Systemic_JIA.25","Systemic_JIA.26")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Control-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### UC_vs_Control ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868715_ReadsPerGene.out.tab SRR6868716_ReadsPerGene.out.tab SRR6868717_ReadsPerGene.out.tab SRR6868718_ReadsPerGene.out.tab SRR6868719_ReadsPerGene.out.tab SRR6868720_ReadsPerGene.out.tab SRR6868721_ReadsPerGene.out.tab SRR6868722_ReadsPerGene.out.tab SRR6868723_ReadsPerGene.out.tab SRR6868724_ReadsPerGene.out.tab SRR6868725_ReadsPerGene.out.tab SRR6868726_ReadsPerGene.out.tab SRR6868543_ReadsPerGene.out.tab SRR6868558_ReadsPerGene.out.tab SRR6868579_ReadsPerGene.out.tab SRR6868586_ReadsPerGene.out.tab SRR6868588_ReadsPerGene.out.tab SRR6868589_ReadsPerGene.out.tab SRR6868591_ReadsPerGene.out.tab SRR6868607_ReadsPerGene.out.tab SRR6868620_ReadsPerGene.out.tab SRR6868638_ReadsPerGene.out.tab SRR6868653_ReadsPerGene.out.tab SRR6868665_ReadsPerGene.out.tab SRR6868685_ReadsPerGene.out.tab SRR6868686_ReadsPerGene.out.tab SRR6868699_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-UC_vs_Control.txt
+
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-UC_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Control.10","Control.11","Control.12","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10","UC.11","UC.12","UC.13","UC.14","UC.15")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-UC_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-UC_vs_Control-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-UC_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-UC_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Oligoarticular_JIA_vs_Crohn ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868540_ReadsPerGene.out.tab SRR6868541_ReadsPerGene.out.tab SRR6868542_ReadsPerGene.out.tab SRR6868544_ReadsPerGene.out.tab SRR6868545_ReadsPerGene.out.tab SRR6868546_ReadsPerGene.out.tab SRR6868557_ReadsPerGene.out.tab SRR6868559_ReadsPerGene.out.tab SRR6868560_ReadsPerGene.out.tab SRR6868569_ReadsPerGene.out.tab SRR6868570_ReadsPerGene.out.tab SRR6868571_ReadsPerGene.out.tab SRR6868572_ReadsPerGene.out.tab SRR6868573_ReadsPerGene.out.tab SRR6868574_ReadsPerGene.out.tab SRR6868575_ReadsPerGene.out.tab SRR6868576_ReadsPerGene.out.tab SRR6868577_ReadsPerGene.out.tab SRR6868578_ReadsPerGene.out.tab SRR6868580_ReadsPerGene.out.tab SRR6868581_ReadsPerGene.out.tab SRR6868582_ReadsPerGene.out.tab SRR6868585_ReadsPerGene.out.tab SRR6868587_ReadsPerGene.out.tab SRR6868590_ReadsPerGene.out.tab SRR6868604_ReadsPerGene.out.tab SRR6868605_ReadsPerGene.out.tab SRR6868606_ReadsPerGene.out.tab SRR6868608_ReadsPerGene.out.tab SRR6868609_ReadsPerGene.out.tab SRR6868610_ReadsPerGene.out.tab SRR6868621_ReadsPerGene.out.tab SRR6868622_ReadsPerGene.out.tab SRR6868623_ReadsPerGene.out.tab SRR6868636_ReadsPerGene.out.tab SRR6868637_ReadsPerGene.out.tab SRR6868639_ReadsPerGene.out.tab SRR6868650_ReadsPerGene.out.tab SRR6868651_ReadsPerGene.out.tab SRR6868652_ReadsPerGene.out.tab SRR6868654_ReadsPerGene.out.tab SRR6868655_ReadsPerGene.out.tab SRR6868666_ReadsPerGene.out.tab SRR6868667_ReadsPerGene.out.tab SRR6868668_ReadsPerGene.out.tab SRR6868669_ReadsPerGene.out.tab SRR6868670_ReadsPerGene.out.tab SRR6868671_ReadsPerGene.out.tab SRR6868683_ReadsPerGene.out.tab SRR6868684_ReadsPerGene.out.tab SRR6868687_ReadsPerGene.out.tab SRR6868688_ReadsPerGene.out.tab SRR6868689_ReadsPerGene.out.tab SRR6868698_ReadsPerGene.out.tab SRR6868700_ReadsPerGene.out.tab SRR6868701_ReadsPerGene.out.tab SRR6868702_ReadsPerGene.out.tab SRR6868713_ReadsPerGene.out.tab SRR6868714_ReadsPerGene.out.tab SRR6868741_ReadsPerGene.out.tab SRR6868550_ReadsPerGene.out.tab SRR6868551_ReadsPerGene.out.tab SRR6868554_ReadsPerGene.out.tab SRR6868555_ReadsPerGene.out.tab SRR6868565_ReadsPerGene.out.tab SRR6868566_ReadsPerGene.out.tab SRR6868583_ReadsPerGene.out.tab SRR6868584_ReadsPerGene.out.tab SRR6868596_ReadsPerGene.out.tab SRR6868598_ReadsPerGene.out.tab SRR6868599_ReadsPerGene.out.tab SRR6868601_ReadsPerGene.out.tab SRR6868614_ReadsPerGene.out.tab SRR6868617_ReadsPerGene.out.tab SRR6868618_ReadsPerGene.out.tab SRR6868631_ReadsPerGene.out.tab SRR6868632_ReadsPerGene.out.tab SRR6868633_ReadsPerGene.out.tab SRR6868635_ReadsPerGene.out.tab SRR6868642_ReadsPerGene.out.tab SRR6868643_ReadsPerGene.out.tab SRR6868644_ReadsPerGene.out.tab SRR6868646_ReadsPerGene.out.tab SRR6868648_ReadsPerGene.out.tab SRR6868659_ReadsPerGene.out.tab SRR6868662_ReadsPerGene.out.tab SRR6868673_ReadsPerGene.out.tab SRR6868674_ReadsPerGene.out.tab SRR6868676_ReadsPerGene.out.tab SRR6868677_ReadsPerGene.out.tab SRR6868678_ReadsPerGene.out.tab SRR6868679_ReadsPerGene.out.tab SRR6868680_ReadsPerGene.out.tab SRR6868681_ReadsPerGene.out.tab SRR6868693_ReadsPerGene.out.tab SRR6868694_ReadsPerGene.out.tab SRR6868695_ReadsPerGene.out.tab SRR6868697_ReadsPerGene.out.tab SRR6868706_ReadsPerGene.out.tab SRR6868709_ReadsPerGene.out.tab SRR6868711_ReadsPerGene.out.tab SRR6868732_ReadsPerGene.out.tab SRR6868734_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300,304,308,312,316,320,324,328,332,336,340,344,348,352,356,360,364,368,372,376,380,384,388,392,396,400,404,408,412 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Oligoarticular_JIA_vs_Crohn.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Oligoarticular_JIA_vs_Crohn.txt", header=F, row.names=1)
+colnames(x)<-c("Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","Crohn.10","Crohn.11","Crohn.12","Crohn.13","Crohn.14","Crohn.15","Crohn.16","Crohn.17","Crohn.18","Crohn.19","Crohn.20","Crohn.21","Crohn.22","Crohn.23","Crohn.24","Crohn.25","Crohn.26","Crohn.27","Crohn.28","Crohn.29","Crohn.30","Crohn.31","Crohn.32","Crohn.33","Crohn.34","Crohn.35","Crohn.36","Crohn.37","Crohn.38","Crohn.39","Crohn.40","Crohn.41","Crohn.42","Crohn.43","Crohn.44","Crohn.45","Crohn.46","Crohn.47","Crohn.48","Crohn.49","Crohn.50","Crohn.51","Crohn.52","Crohn.53","Crohn.54","Crohn.55","Crohn.56","Crohn.57","Crohn.58","Crohn.59","Crohn.60","Oligoarticular_JIA.1","Oligoarticular_JIA.2","Oligoarticular_JIA.3","Oligoarticular_JIA.4","Oligoarticular_JIA.5","Oligoarticular_JIA.6","Oligoarticular_JIA.7","Oligoarticular_JIA.8","Oligoarticular_JIA.9","Oligoarticular_JIA.10","Oligoarticular_JIA.11","Oligoarticular_JIA.12","Oligoarticular_JIA.13","Oligoarticular_JIA.14","Oligoarticular_JIA.15","Oligoarticular_JIA.16","Oligoarticular_JIA.17","Oligoarticular_JIA.18","Oligoarticular_JIA.19","Oligoarticular_JIA.20","Oligoarticular_JIA.21","Oligoarticular_JIA.22","Oligoarticular_JIA.23","Oligoarticular_JIA.24","Oligoarticular_JIA.25","Oligoarticular_JIA.26","Oligoarticular_JIA.27","Oligoarticular_JIA.28","Oligoarticular_JIA.29","Oligoarticular_JIA.30","Oligoarticular_JIA.31","Oligoarticular_JIA.32","Oligoarticular_JIA.33","Oligoarticular_JIA.34","Oligoarticular_JIA.35","Oligoarticular_JIA.36","Oligoarticular_JIA.37","Oligoarticular_JIA.38","Oligoarticular_JIA.39","Oligoarticular_JIA.40","Oligoarticular_JIA.41","Oligoarticular_JIA.42","Oligoarticular_JIA.43")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_Crohn-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_Crohn-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_Crohn-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_Crohn-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Polyarticular_JIA_vs_Crohn ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868540_ReadsPerGene.out.tab SRR6868541_ReadsPerGene.out.tab SRR6868542_ReadsPerGene.out.tab SRR6868544_ReadsPerGene.out.tab SRR6868545_ReadsPerGene.out.tab SRR6868546_ReadsPerGene.out.tab SRR6868557_ReadsPerGene.out.tab SRR6868559_ReadsPerGene.out.tab SRR6868560_ReadsPerGene.out.tab SRR6868569_ReadsPerGene.out.tab SRR6868570_ReadsPerGene.out.tab SRR6868571_ReadsPerGene.out.tab SRR6868572_ReadsPerGene.out.tab SRR6868573_ReadsPerGene.out.tab SRR6868574_ReadsPerGene.out.tab SRR6868575_ReadsPerGene.out.tab SRR6868576_ReadsPerGene.out.tab SRR6868577_ReadsPerGene.out.tab SRR6868578_ReadsPerGene.out.tab SRR6868580_ReadsPerGene.out.tab SRR6868581_ReadsPerGene.out.tab SRR6868582_ReadsPerGene.out.tab SRR6868585_ReadsPerGene.out.tab SRR6868587_ReadsPerGene.out.tab SRR6868590_ReadsPerGene.out.tab SRR6868604_ReadsPerGene.out.tab SRR6868605_ReadsPerGene.out.tab SRR6868606_ReadsPerGene.out.tab SRR6868608_ReadsPerGene.out.tab SRR6868609_ReadsPerGene.out.tab SRR6868610_ReadsPerGene.out.tab SRR6868621_ReadsPerGene.out.tab SRR6868622_ReadsPerGene.out.tab SRR6868623_ReadsPerGene.out.tab SRR6868636_ReadsPerGene.out.tab SRR6868637_ReadsPerGene.out.tab SRR6868639_ReadsPerGene.out.tab SRR6868650_ReadsPerGene.out.tab SRR6868651_ReadsPerGene.out.tab SRR6868652_ReadsPerGene.out.tab SRR6868654_ReadsPerGene.out.tab SRR6868655_ReadsPerGene.out.tab SRR6868666_ReadsPerGene.out.tab SRR6868667_ReadsPerGene.out.tab SRR6868668_ReadsPerGene.out.tab SRR6868669_ReadsPerGene.out.tab SRR6868670_ReadsPerGene.out.tab SRR6868671_ReadsPerGene.out.tab SRR6868683_ReadsPerGene.out.tab SRR6868684_ReadsPerGene.out.tab SRR6868687_ReadsPerGene.out.tab SRR6868688_ReadsPerGene.out.tab SRR6868689_ReadsPerGene.out.tab SRR6868698_ReadsPerGene.out.tab SRR6868700_ReadsPerGene.out.tab SRR6868701_ReadsPerGene.out.tab SRR6868702_ReadsPerGene.out.tab SRR6868713_ReadsPerGene.out.tab SRR6868714_ReadsPerGene.out.tab SRR6868741_ReadsPerGene.out.tab SRR6868547_ReadsPerGene.out.tab SRR6868548_ReadsPerGene.out.tab SRR6868549_ReadsPerGene.out.tab SRR6868556_ReadsPerGene.out.tab SRR6868561_ReadsPerGene.out.tab SRR6868562_ReadsPerGene.out.tab SRR6868568_ReadsPerGene.out.tab SRR6868592_ReadsPerGene.out.tab SRR6868593_ReadsPerGene.out.tab SRR6868594_ReadsPerGene.out.tab SRR6868595_ReadsPerGene.out.tab SRR6868600_ReadsPerGene.out.tab SRR6868602_ReadsPerGene.out.tab SRR6868603_ReadsPerGene.out.tab SRR6868611_ReadsPerGene.out.tab SRR6868612_ReadsPerGene.out.tab SRR6868619_ReadsPerGene.out.tab SRR6868624_ReadsPerGene.out.tab SRR6868625_ReadsPerGene.out.tab SRR6868626_ReadsPerGene.out.tab SRR6868627_ReadsPerGene.out.tab SRR6868628_ReadsPerGene.out.tab SRR6868629_ReadsPerGene.out.tab SRR6868630_ReadsPerGene.out.tab SRR6868640_ReadsPerGene.out.tab SRR6868647_ReadsPerGene.out.tab SRR6868656_ReadsPerGene.out.tab SRR6868657_ReadsPerGene.out.tab SRR6868658_ReadsPerGene.out.tab SRR6868672_ReadsPerGene.out.tab SRR6868690_ReadsPerGene.out.tab SRR6868691_ReadsPerGene.out.tab SRR6868692_ReadsPerGene.out.tab SRR6868703_ReadsPerGene.out.tab SRR6868704_ReadsPerGene.out.tab SRR6868705_ReadsPerGene.out.tab SRR6868708_ReadsPerGene.out.tab SRR6868712_ReadsPerGene.out.tab SRR6868727_ReadsPerGene.out.tab SRR6868728_ReadsPerGene.out.tab SRR6868729_ReadsPerGene.out.tab SRR6868730_ReadsPerGene.out.tab SRR6868731_ReadsPerGene.out.tab SRR6868738_ReadsPerGene.out.tab SRR6868739_ReadsPerGene.out.tab SRR6868740_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300,304,308,312,316,320,324,328,332,336,340,344,348,352,356,360,364,368,372,376,380,384,388,392,396,400,404,408,412,416,420,424 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Polyarticular_JIA_vs_Crohn.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Polyarticular_JIA_vs_Crohn.txt", header=F, row.names=1)
+colnames(x)<-c("Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","Crohn.10","Crohn.11","Crohn.12","Crohn.13","Crohn.14","Crohn.15","Crohn.16","Crohn.17","Crohn.18","Crohn.19","Crohn.20","Crohn.21","Crohn.22","Crohn.23","Crohn.24","Crohn.25","Crohn.26","Crohn.27","Crohn.28","Crohn.29","Crohn.30","Crohn.31","Crohn.32","Crohn.33","Crohn.34","Crohn.35","Crohn.36","Crohn.37","Crohn.38","Crohn.39","Crohn.40","Crohn.41","Crohn.42","Crohn.43","Crohn.44","Crohn.45","Crohn.46","Crohn.47","Crohn.48","Crohn.49","Crohn.50","Crohn.51","Crohn.52","Crohn.53","Crohn.54","Crohn.55","Crohn.56","Crohn.57","Crohn.58","Crohn.59","Crohn.60","Polyarticular_JIA.1","Polyarticular_JIA.2","Polyarticular_JIA.3","Polyarticular_JIA.4","Polyarticular_JIA.5","Polyarticular_JIA.6","Polyarticular_JIA.7","Polyarticular_JIA.8","Polyarticular_JIA.9","Polyarticular_JIA.10","Polyarticular_JIA.11","Polyarticular_JIA.12","Polyarticular_JIA.13","Polyarticular_JIA.14","Polyarticular_JIA.15","Polyarticular_JIA.16","Polyarticular_JIA.17","Polyarticular_JIA.18","Polyarticular_JIA.19","Polyarticular_JIA.20","Polyarticular_JIA.21","Polyarticular_JIA.22","Polyarticular_JIA.23","Polyarticular_JIA.24","Polyarticular_JIA.25","Polyarticular_JIA.26","Polyarticular_JIA.27","Polyarticular_JIA.28","Polyarticular_JIA.29","Polyarticular_JIA.30","Polyarticular_JIA.31","Polyarticular_JIA.32","Polyarticular_JIA.33","Polyarticular_JIA.34","Polyarticular_JIA.35","Polyarticular_JIA.36","Polyarticular_JIA.37","Polyarticular_JIA.38","Polyarticular_JIA.39","Polyarticular_JIA.40","Polyarticular_JIA.41","Polyarticular_JIA.42","Polyarticular_JIA.43","Polyarticular_JIA.44","Polyarticular_JIA.45","Polyarticular_JIA.46")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Crohn-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Crohn-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Crohn-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Crohn-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Systemic_JIA_vs_Crohn ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868540_ReadsPerGene.out.tab SRR6868541_ReadsPerGene.out.tab SRR6868542_ReadsPerGene.out.tab SRR6868544_ReadsPerGene.out.tab SRR6868545_ReadsPerGene.out.tab SRR6868546_ReadsPerGene.out.tab SRR6868557_ReadsPerGene.out.tab SRR6868559_ReadsPerGene.out.tab SRR6868560_ReadsPerGene.out.tab SRR6868569_ReadsPerGene.out.tab SRR6868570_ReadsPerGene.out.tab SRR6868571_ReadsPerGene.out.tab SRR6868572_ReadsPerGene.out.tab SRR6868573_ReadsPerGene.out.tab SRR6868574_ReadsPerGene.out.tab SRR6868575_ReadsPerGene.out.tab SRR6868576_ReadsPerGene.out.tab SRR6868577_ReadsPerGene.out.tab SRR6868578_ReadsPerGene.out.tab SRR6868580_ReadsPerGene.out.tab SRR6868581_ReadsPerGene.out.tab SRR6868582_ReadsPerGene.out.tab SRR6868585_ReadsPerGene.out.tab SRR6868587_ReadsPerGene.out.tab SRR6868590_ReadsPerGene.out.tab SRR6868604_ReadsPerGene.out.tab SRR6868605_ReadsPerGene.out.tab SRR6868606_ReadsPerGene.out.tab SRR6868608_ReadsPerGene.out.tab SRR6868609_ReadsPerGene.out.tab SRR6868610_ReadsPerGene.out.tab SRR6868621_ReadsPerGene.out.tab SRR6868622_ReadsPerGene.out.tab SRR6868623_ReadsPerGene.out.tab SRR6868636_ReadsPerGene.out.tab SRR6868637_ReadsPerGene.out.tab SRR6868639_ReadsPerGene.out.tab SRR6868650_ReadsPerGene.out.tab SRR6868651_ReadsPerGene.out.tab SRR6868652_ReadsPerGene.out.tab SRR6868654_ReadsPerGene.out.tab SRR6868655_ReadsPerGene.out.tab SRR6868666_ReadsPerGene.out.tab SRR6868667_ReadsPerGene.out.tab SRR6868668_ReadsPerGene.out.tab SRR6868669_ReadsPerGene.out.tab SRR6868670_ReadsPerGene.out.tab SRR6868671_ReadsPerGene.out.tab SRR6868683_ReadsPerGene.out.tab SRR6868684_ReadsPerGene.out.tab SRR6868687_ReadsPerGene.out.tab SRR6868688_ReadsPerGene.out.tab SRR6868689_ReadsPerGene.out.tab SRR6868698_ReadsPerGene.out.tab SRR6868700_ReadsPerGene.out.tab SRR6868701_ReadsPerGene.out.tab SRR6868702_ReadsPerGene.out.tab SRR6868713_ReadsPerGene.out.tab SRR6868714_ReadsPerGene.out.tab SRR6868741_ReadsPerGene.out.tab SRR6868552_ReadsPerGene.out.tab SRR6868553_ReadsPerGene.out.tab SRR6868563_ReadsPerGene.out.tab SRR6868564_ReadsPerGene.out.tab SRR6868567_ReadsPerGene.out.tab SRR6868597_ReadsPerGene.out.tab SRR6868613_ReadsPerGene.out.tab SRR6868615_ReadsPerGene.out.tab SRR6868616_ReadsPerGene.out.tab SRR6868634_ReadsPerGene.out.tab SRR6868641_ReadsPerGene.out.tab SRR6868645_ReadsPerGene.out.tab SRR6868649_ReadsPerGene.out.tab SRR6868660_ReadsPerGene.out.tab SRR6868661_ReadsPerGene.out.tab SRR6868663_ReadsPerGene.out.tab SRR6868664_ReadsPerGene.out.tab SRR6868675_ReadsPerGene.out.tab SRR6868682_ReadsPerGene.out.tab SRR6868696_ReadsPerGene.out.tab SRR6868707_ReadsPerGene.out.tab SRR6868710_ReadsPerGene.out.tab SRR6868733_ReadsPerGene.out.tab SRR6868735_ReadsPerGene.out.tab SRR6868736_ReadsPerGene.out.tab SRR6868737_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300,304,308,312,316,320,324,328,332,336,340,344 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Systemic_JIA_vs_Crohn.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Systemic_JIA_vs_Crohn.txt", header=F, row.names=1)
+colnames(x)<-c("Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","Crohn.10","Crohn.11","Crohn.12","Crohn.13","Crohn.14","Crohn.15","Crohn.16","Crohn.17","Crohn.18","Crohn.19","Crohn.20","Crohn.21","Crohn.22","Crohn.23","Crohn.24","Crohn.25","Crohn.26","Crohn.27","Crohn.28","Crohn.29","Crohn.30","Crohn.31","Crohn.32","Crohn.33","Crohn.34","Crohn.35","Crohn.36","Crohn.37","Crohn.38","Crohn.39","Crohn.40","Crohn.41","Crohn.42","Crohn.43","Crohn.44","Crohn.45","Crohn.46","Crohn.47","Crohn.48","Crohn.49","Crohn.50","Crohn.51","Crohn.52","Crohn.53","Crohn.54","Crohn.55","Crohn.56","Crohn.57","Crohn.58","Crohn.59","Crohn.60","Systemic_JIA.1","Systemic_JIA.2","Systemic_JIA.3","Systemic_JIA.4","Systemic_JIA.5","Systemic_JIA.6","Systemic_JIA.7","Systemic_JIA.8","Systemic_JIA.9","Systemic_JIA.10","Systemic_JIA.11","Systemic_JIA.12","Systemic_JIA.13","Systemic_JIA.14","Systemic_JIA.15","Systemic_JIA.16","Systemic_JIA.17","Systemic_JIA.18","Systemic_JIA.19","Systemic_JIA.20","Systemic_JIA.21","Systemic_JIA.22","Systemic_JIA.23","Systemic_JIA.24","Systemic_JIA.25","Systemic_JIA.26")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Crohn-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Crohn-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Crohn-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Crohn-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### UC_vs_Crohn ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868540_ReadsPerGene.out.tab SRR6868541_ReadsPerGene.out.tab SRR6868542_ReadsPerGene.out.tab SRR6868544_ReadsPerGene.out.tab SRR6868545_ReadsPerGene.out.tab SRR6868546_ReadsPerGene.out.tab SRR6868557_ReadsPerGene.out.tab SRR6868559_ReadsPerGene.out.tab SRR6868560_ReadsPerGene.out.tab SRR6868569_ReadsPerGene.out.tab SRR6868570_ReadsPerGene.out.tab SRR6868571_ReadsPerGene.out.tab SRR6868572_ReadsPerGene.out.tab SRR6868573_ReadsPerGene.out.tab SRR6868574_ReadsPerGene.out.tab SRR6868575_ReadsPerGene.out.tab SRR6868576_ReadsPerGene.out.tab SRR6868577_ReadsPerGene.out.tab SRR6868578_ReadsPerGene.out.tab SRR6868580_ReadsPerGene.out.tab SRR6868581_ReadsPerGene.out.tab SRR6868582_ReadsPerGene.out.tab SRR6868585_ReadsPerGene.out.tab SRR6868587_ReadsPerGene.out.tab SRR6868590_ReadsPerGene.out.tab SRR6868604_ReadsPerGene.out.tab SRR6868605_ReadsPerGene.out.tab SRR6868606_ReadsPerGene.out.tab SRR6868608_ReadsPerGene.out.tab SRR6868609_ReadsPerGene.out.tab SRR6868610_ReadsPerGene.out.tab SRR6868621_ReadsPerGene.out.tab SRR6868622_ReadsPerGene.out.tab SRR6868623_ReadsPerGene.out.tab SRR6868636_ReadsPerGene.out.tab SRR6868637_ReadsPerGene.out.tab SRR6868639_ReadsPerGene.out.tab SRR6868650_ReadsPerGene.out.tab SRR6868651_ReadsPerGene.out.tab SRR6868652_ReadsPerGene.out.tab SRR6868654_ReadsPerGene.out.tab SRR6868655_ReadsPerGene.out.tab SRR6868666_ReadsPerGene.out.tab SRR6868667_ReadsPerGene.out.tab SRR6868668_ReadsPerGene.out.tab SRR6868669_ReadsPerGene.out.tab SRR6868670_ReadsPerGene.out.tab SRR6868671_ReadsPerGene.out.tab SRR6868683_ReadsPerGene.out.tab SRR6868684_ReadsPerGene.out.tab SRR6868687_ReadsPerGene.out.tab SRR6868688_ReadsPerGene.out.tab SRR6868689_ReadsPerGene.out.tab SRR6868698_ReadsPerGene.out.tab SRR6868700_ReadsPerGene.out.tab SRR6868701_ReadsPerGene.out.tab SRR6868702_ReadsPerGene.out.tab SRR6868713_ReadsPerGene.out.tab SRR6868714_ReadsPerGene.out.tab SRR6868741_ReadsPerGene.out.tab SRR6868543_ReadsPerGene.out.tab SRR6868558_ReadsPerGene.out.tab SRR6868579_ReadsPerGene.out.tab SRR6868586_ReadsPerGene.out.tab SRR6868588_ReadsPerGene.out.tab SRR6868589_ReadsPerGene.out.tab SRR6868591_ReadsPerGene.out.tab SRR6868607_ReadsPerGene.out.tab SRR6868620_ReadsPerGene.out.tab SRR6868638_ReadsPerGene.out.tab SRR6868653_ReadsPerGene.out.tab SRR6868665_ReadsPerGene.out.tab SRR6868685_ReadsPerGene.out.tab SRR6868686_ReadsPerGene.out.tab SRR6868699_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-UC_vs_Crohn.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-UC_vs_Crohn.txt", header=F, row.names=1)
+colnames(x)<-c("Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","Crohn.10","Crohn.11","Crohn.12","Crohn.13","Crohn.14","Crohn.15","Crohn.16","Crohn.17","Crohn.18","Crohn.19","Crohn.20","Crohn.21","Crohn.22","Crohn.23","Crohn.24","Crohn.25","Crohn.26","Crohn.27","Crohn.28","Crohn.29","Crohn.30","Crohn.31","Crohn.32","Crohn.33","Crohn.34","Crohn.35","Crohn.36","Crohn.37","Crohn.38","Crohn.39","Crohn.40","Crohn.41","Crohn.42","Crohn.43","Crohn.44","Crohn.45","Crohn.46","Crohn.47","Crohn.48","Crohn.49","Crohn.50","Crohn.51","Crohn.52","Crohn.53","Crohn.54","Crohn.55","Crohn.56","Crohn.57","Crohn.58","Crohn.59","Crohn.60","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10","UC.11","UC.12","UC.13","UC.14","UC.15")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-UC_vs_Crohn-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-UC_vs_Crohn-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-UC_vs_Crohn-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-UC_vs_Crohn-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Polyarticular_JIA_vs_Oligoarticular_JIA ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868550_ReadsPerGene.out.tab SRR6868551_ReadsPerGene.out.tab SRR6868554_ReadsPerGene.out.tab SRR6868555_ReadsPerGene.out.tab SRR6868565_ReadsPerGene.out.tab SRR6868566_ReadsPerGene.out.tab SRR6868583_ReadsPerGene.out.tab SRR6868584_ReadsPerGene.out.tab SRR6868596_ReadsPerGene.out.tab SRR6868598_ReadsPerGene.out.tab SRR6868599_ReadsPerGene.out.tab SRR6868601_ReadsPerGene.out.tab SRR6868614_ReadsPerGene.out.tab SRR6868617_ReadsPerGene.out.tab SRR6868618_ReadsPerGene.out.tab SRR6868631_ReadsPerGene.out.tab SRR6868632_ReadsPerGene.out.tab SRR6868633_ReadsPerGene.out.tab SRR6868635_ReadsPerGene.out.tab SRR6868642_ReadsPerGene.out.tab SRR6868643_ReadsPerGene.out.tab SRR6868644_ReadsPerGene.out.tab SRR6868646_ReadsPerGene.out.tab SRR6868648_ReadsPerGene.out.tab SRR6868659_ReadsPerGene.out.tab SRR6868662_ReadsPerGene.out.tab SRR6868673_ReadsPerGene.out.tab SRR6868674_ReadsPerGene.out.tab SRR6868676_ReadsPerGene.out.tab SRR6868677_ReadsPerGene.out.tab SRR6868678_ReadsPerGene.out.tab SRR6868679_ReadsPerGene.out.tab SRR6868680_ReadsPerGene.out.tab SRR6868681_ReadsPerGene.out.tab SRR6868693_ReadsPerGene.out.tab SRR6868694_ReadsPerGene.out.tab SRR6868695_ReadsPerGene.out.tab SRR6868697_ReadsPerGene.out.tab SRR6868706_ReadsPerGene.out.tab SRR6868709_ReadsPerGene.out.tab SRR6868711_ReadsPerGene.out.tab SRR6868732_ReadsPerGene.out.tab SRR6868734_ReadsPerGene.out.tab SRR6868547_ReadsPerGene.out.tab SRR6868548_ReadsPerGene.out.tab SRR6868549_ReadsPerGene.out.tab SRR6868556_ReadsPerGene.out.tab SRR6868561_ReadsPerGene.out.tab SRR6868562_ReadsPerGene.out.tab SRR6868568_ReadsPerGene.out.tab SRR6868592_ReadsPerGene.out.tab SRR6868593_ReadsPerGene.out.tab SRR6868594_ReadsPerGene.out.tab SRR6868595_ReadsPerGene.out.tab SRR6868600_ReadsPerGene.out.tab SRR6868602_ReadsPerGene.out.tab SRR6868603_ReadsPerGene.out.tab SRR6868611_ReadsPerGene.out.tab SRR6868612_ReadsPerGene.out.tab SRR6868619_ReadsPerGene.out.tab SRR6868624_ReadsPerGene.out.tab SRR6868625_ReadsPerGene.out.tab SRR6868626_ReadsPerGene.out.tab SRR6868627_ReadsPerGene.out.tab SRR6868628_ReadsPerGene.out.tab SRR6868629_ReadsPerGene.out.tab SRR6868630_ReadsPerGene.out.tab SRR6868640_ReadsPerGene.out.tab SRR6868647_ReadsPerGene.out.tab SRR6868656_ReadsPerGene.out.tab SRR6868657_ReadsPerGene.out.tab SRR6868658_ReadsPerGene.out.tab SRR6868672_ReadsPerGene.out.tab SRR6868690_ReadsPerGene.out.tab SRR6868691_ReadsPerGene.out.tab SRR6868692_ReadsPerGene.out.tab SRR6868703_ReadsPerGene.out.tab SRR6868704_ReadsPerGene.out.tab SRR6868705_ReadsPerGene.out.tab SRR6868708_ReadsPerGene.out.tab SRR6868712_ReadsPerGene.out.tab SRR6868727_ReadsPerGene.out.tab SRR6868728_ReadsPerGene.out.tab SRR6868729_ReadsPerGene.out.tab SRR6868730_ReadsPerGene.out.tab SRR6868731_ReadsPerGene.out.tab SRR6868738_ReadsPerGene.out.tab SRR6868739_ReadsPerGene.out.tab SRR6868740_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300,304,308,312,316,320,324,328,332,336,340,344,348,352,356 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Polyarticular_JIA_vs_Oligoarticular_JIA.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Polyarticular_JIA_vs_Oligoarticular_JIA.txt", header=F, row.names=1)
+colnames(x)<-c("Oligoarticular_JIA.1","Oligoarticular_JIA.2","Oligoarticular_JIA.3","Oligoarticular_JIA.4","Oligoarticular_JIA.5","Oligoarticular_JIA.6","Oligoarticular_JIA.7","Oligoarticular_JIA.8","Oligoarticular_JIA.9","Oligoarticular_JIA.10","Oligoarticular_JIA.11","Oligoarticular_JIA.12","Oligoarticular_JIA.13","Oligoarticular_JIA.14","Oligoarticular_JIA.15","Oligoarticular_JIA.16","Oligoarticular_JIA.17","Oligoarticular_JIA.18","Oligoarticular_JIA.19","Oligoarticular_JIA.20","Oligoarticular_JIA.21","Oligoarticular_JIA.22","Oligoarticular_JIA.23","Oligoarticular_JIA.24","Oligoarticular_JIA.25","Oligoarticular_JIA.26","Oligoarticular_JIA.27","Oligoarticular_JIA.28","Oligoarticular_JIA.29","Oligoarticular_JIA.30","Oligoarticular_JIA.31","Oligoarticular_JIA.32","Oligoarticular_JIA.33","Oligoarticular_JIA.34","Oligoarticular_JIA.35","Oligoarticular_JIA.36","Oligoarticular_JIA.37","Oligoarticular_JIA.38","Oligoarticular_JIA.39","Oligoarticular_JIA.40","Oligoarticular_JIA.41","Oligoarticular_JIA.42","Oligoarticular_JIA.43","Polyarticular_JIA.1","Polyarticular_JIA.2","Polyarticular_JIA.3","Polyarticular_JIA.4","Polyarticular_JIA.5","Polyarticular_JIA.6","Polyarticular_JIA.7","Polyarticular_JIA.8","Polyarticular_JIA.9","Polyarticular_JIA.10","Polyarticular_JIA.11","Polyarticular_JIA.12","Polyarticular_JIA.13","Polyarticular_JIA.14","Polyarticular_JIA.15","Polyarticular_JIA.16","Polyarticular_JIA.17","Polyarticular_JIA.18","Polyarticular_JIA.19","Polyarticular_JIA.20","Polyarticular_JIA.21","Polyarticular_JIA.22","Polyarticular_JIA.23","Polyarticular_JIA.24","Polyarticular_JIA.25","Polyarticular_JIA.26","Polyarticular_JIA.27","Polyarticular_JIA.28","Polyarticular_JIA.29","Polyarticular_JIA.30","Polyarticular_JIA.31","Polyarticular_JIA.32","Polyarticular_JIA.33","Polyarticular_JIA.34","Polyarticular_JIA.35","Polyarticular_JIA.36","Polyarticular_JIA.37","Polyarticular_JIA.38","Polyarticular_JIA.39","Polyarticular_JIA.40","Polyarticular_JIA.41","Polyarticular_JIA.42","Polyarticular_JIA.43","Polyarticular_JIA.44","Polyarticular_JIA.45","Polyarticular_JIA.46")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Oligoarticular_JIA-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Oligoarticular_JIA-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Oligoarticular_JIA-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Polyarticular_JIA_vs_Oligoarticular_JIA-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Systemic_JIA_vs_Oligoarticular_JIA ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868550_ReadsPerGene.out.tab SRR6868551_ReadsPerGene.out.tab SRR6868554_ReadsPerGene.out.tab SRR6868555_ReadsPerGene.out.tab SRR6868565_ReadsPerGene.out.tab SRR6868566_ReadsPerGene.out.tab SRR6868583_ReadsPerGene.out.tab SRR6868584_ReadsPerGene.out.tab SRR6868596_ReadsPerGene.out.tab SRR6868598_ReadsPerGene.out.tab SRR6868599_ReadsPerGene.out.tab SRR6868601_ReadsPerGene.out.tab SRR6868614_ReadsPerGene.out.tab SRR6868617_ReadsPerGene.out.tab SRR6868618_ReadsPerGene.out.tab SRR6868631_ReadsPerGene.out.tab SRR6868632_ReadsPerGene.out.tab SRR6868633_ReadsPerGene.out.tab SRR6868635_ReadsPerGene.out.tab SRR6868642_ReadsPerGene.out.tab SRR6868643_ReadsPerGene.out.tab SRR6868644_ReadsPerGene.out.tab SRR6868646_ReadsPerGene.out.tab SRR6868648_ReadsPerGene.out.tab SRR6868659_ReadsPerGene.out.tab SRR6868662_ReadsPerGene.out.tab SRR6868673_ReadsPerGene.out.tab SRR6868674_ReadsPerGene.out.tab SRR6868676_ReadsPerGene.out.tab SRR6868677_ReadsPerGene.out.tab SRR6868678_ReadsPerGene.out.tab SRR6868679_ReadsPerGene.out.tab SRR6868680_ReadsPerGene.out.tab SRR6868681_ReadsPerGene.out.tab SRR6868693_ReadsPerGene.out.tab SRR6868694_ReadsPerGene.out.tab SRR6868695_ReadsPerGene.out.tab SRR6868697_ReadsPerGene.out.tab SRR6868706_ReadsPerGene.out.tab SRR6868709_ReadsPerGene.out.tab SRR6868711_ReadsPerGene.out.tab SRR6868732_ReadsPerGene.out.tab SRR6868734_ReadsPerGene.out.tab SRR6868552_ReadsPerGene.out.tab SRR6868553_ReadsPerGene.out.tab SRR6868563_ReadsPerGene.out.tab SRR6868564_ReadsPerGene.out.tab SRR6868567_ReadsPerGene.out.tab SRR6868597_ReadsPerGene.out.tab SRR6868613_ReadsPerGene.out.tab SRR6868615_ReadsPerGene.out.tab SRR6868616_ReadsPerGene.out.tab SRR6868634_ReadsPerGene.out.tab SRR6868641_ReadsPerGene.out.tab SRR6868645_ReadsPerGene.out.tab SRR6868649_ReadsPerGene.out.tab SRR6868660_ReadsPerGene.out.tab SRR6868661_ReadsPerGene.out.tab SRR6868663_ReadsPerGene.out.tab SRR6868664_ReadsPerGene.out.tab SRR6868675_ReadsPerGene.out.tab SRR6868682_ReadsPerGene.out.tab SRR6868696_ReadsPerGene.out.tab SRR6868707_ReadsPerGene.out.tab SRR6868710_ReadsPerGene.out.tab SRR6868733_ReadsPerGene.out.tab SRR6868735_ReadsPerGene.out.tab SRR6868736_ReadsPerGene.out.tab SRR6868737_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Systemic_JIA_vs_Oligoarticular_JIA.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Systemic_JIA_vs_Oligoarticular_JIA.txt", header=F, row.names=1)
+colnames(x)<-c("Oligoarticular_JIA.1","Oligoarticular_JIA.2","Oligoarticular_JIA.3","Oligoarticular_JIA.4","Oligoarticular_JIA.5","Oligoarticular_JIA.6","Oligoarticular_JIA.7","Oligoarticular_JIA.8","Oligoarticular_JIA.9","Oligoarticular_JIA.10","Oligoarticular_JIA.11","Oligoarticular_JIA.12","Oligoarticular_JIA.13","Oligoarticular_JIA.14","Oligoarticular_JIA.15","Oligoarticular_JIA.16","Oligoarticular_JIA.17","Oligoarticular_JIA.18","Oligoarticular_JIA.19","Oligoarticular_JIA.20","Oligoarticular_JIA.21","Oligoarticular_JIA.22","Oligoarticular_JIA.23","Oligoarticular_JIA.24","Oligoarticular_JIA.25","Oligoarticular_JIA.26","Oligoarticular_JIA.27","Oligoarticular_JIA.28","Oligoarticular_JIA.29","Oligoarticular_JIA.30","Oligoarticular_JIA.31","Oligoarticular_JIA.32","Oligoarticular_JIA.33","Oligoarticular_JIA.34","Oligoarticular_JIA.35","Oligoarticular_JIA.36","Oligoarticular_JIA.37","Oligoarticular_JIA.38","Oligoarticular_JIA.39","Oligoarticular_JIA.40","Oligoarticular_JIA.41","Oligoarticular_JIA.42","Oligoarticular_JIA.43","Systemic_JIA.1","Systemic_JIA.2","Systemic_JIA.3","Systemic_JIA.4","Systemic_JIA.5","Systemic_JIA.6","Systemic_JIA.7","Systemic_JIA.8","Systemic_JIA.9","Systemic_JIA.10","Systemic_JIA.11","Systemic_JIA.12","Systemic_JIA.13","Systemic_JIA.14","Systemic_JIA.15","Systemic_JIA.16","Systemic_JIA.17","Systemic_JIA.18","Systemic_JIA.19","Systemic_JIA.20","Systemic_JIA.21","Systemic_JIA.22","Systemic_JIA.23","Systemic_JIA.24","Systemic_JIA.25","Systemic_JIA.26")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Oligoarticular_JIA-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Oligoarticular_JIA-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Oligoarticular_JIA-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Oligoarticular_JIA-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Oligoarticular_JIA_vs_UC ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868550_ReadsPerGene.out.tab SRR6868551_ReadsPerGene.out.tab SRR6868554_ReadsPerGene.out.tab SRR6868555_ReadsPerGene.out.tab SRR6868565_ReadsPerGene.out.tab SRR6868566_ReadsPerGene.out.tab SRR6868583_ReadsPerGene.out.tab SRR6868584_ReadsPerGene.out.tab SRR6868596_ReadsPerGene.out.tab SRR6868598_ReadsPerGene.out.tab SRR6868599_ReadsPerGene.out.tab SRR6868601_ReadsPerGene.out.tab SRR6868614_ReadsPerGene.out.tab SRR6868617_ReadsPerGene.out.tab SRR6868618_ReadsPerGene.out.tab SRR6868631_ReadsPerGene.out.tab SRR6868632_ReadsPerGene.out.tab SRR6868633_ReadsPerGene.out.tab SRR6868635_ReadsPerGene.out.tab SRR6868642_ReadsPerGene.out.tab SRR6868643_ReadsPerGene.out.tab SRR6868644_ReadsPerGene.out.tab SRR6868646_ReadsPerGene.out.tab SRR6868648_ReadsPerGene.out.tab SRR6868659_ReadsPerGene.out.tab SRR6868662_ReadsPerGene.out.tab SRR6868673_ReadsPerGene.out.tab SRR6868674_ReadsPerGene.out.tab SRR6868676_ReadsPerGene.out.tab SRR6868677_ReadsPerGene.out.tab SRR6868678_ReadsPerGene.out.tab SRR6868679_ReadsPerGene.out.tab SRR6868680_ReadsPerGene.out.tab SRR6868681_ReadsPerGene.out.tab SRR6868693_ReadsPerGene.out.tab SRR6868694_ReadsPerGene.out.tab SRR6868695_ReadsPerGene.out.tab SRR6868697_ReadsPerGene.out.tab SRR6868706_ReadsPerGene.out.tab SRR6868709_ReadsPerGene.out.tab SRR6868711_ReadsPerGene.out.tab SRR6868732_ReadsPerGene.out.tab SRR6868734_ReadsPerGene.out.tab SRR6868543_ReadsPerGene.out.tab SRR6868558_ReadsPerGene.out.tab SRR6868579_ReadsPerGene.out.tab SRR6868586_ReadsPerGene.out.tab SRR6868588_ReadsPerGene.out.tab SRR6868589_ReadsPerGene.out.tab SRR6868591_ReadsPerGene.out.tab SRR6868607_ReadsPerGene.out.tab SRR6868620_ReadsPerGene.out.tab SRR6868638_ReadsPerGene.out.tab SRR6868653_ReadsPerGene.out.tab SRR6868665_ReadsPerGene.out.tab SRR6868685_ReadsPerGene.out.tab SRR6868686_ReadsPerGene.out.tab SRR6868699_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Oligoarticular_JIA_vs_UC.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Oligoarticular_JIA_vs_UC.txt", header=F, row.names=1)
+colnames(x)<-c("Oligoarticular_JIA.1","Oligoarticular_JIA.2","Oligoarticular_JIA.3","Oligoarticular_JIA.4","Oligoarticular_JIA.5","Oligoarticular_JIA.6","Oligoarticular_JIA.7","Oligoarticular_JIA.8","Oligoarticular_JIA.9","Oligoarticular_JIA.10","Oligoarticular_JIA.11","Oligoarticular_JIA.12","Oligoarticular_JIA.13","Oligoarticular_JIA.14","Oligoarticular_JIA.15","Oligoarticular_JIA.16","Oligoarticular_JIA.17","Oligoarticular_JIA.18","Oligoarticular_JIA.19","Oligoarticular_JIA.20","Oligoarticular_JIA.21","Oligoarticular_JIA.22","Oligoarticular_JIA.23","Oligoarticular_JIA.24","Oligoarticular_JIA.25","Oligoarticular_JIA.26","Oligoarticular_JIA.27","Oligoarticular_JIA.28","Oligoarticular_JIA.29","Oligoarticular_JIA.30","Oligoarticular_JIA.31","Oligoarticular_JIA.32","Oligoarticular_JIA.33","Oligoarticular_JIA.34","Oligoarticular_JIA.35","Oligoarticular_JIA.36","Oligoarticular_JIA.37","Oligoarticular_JIA.38","Oligoarticular_JIA.39","Oligoarticular_JIA.40","Oligoarticular_JIA.41","Oligoarticular_JIA.42","Oligoarticular_JIA.43","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10","UC.11","UC.12","UC.13","UC.14","UC.15")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_UC-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_UC-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_UC-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Oligoarticular_JIA_vs_UC-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### Systemic_JIA_vs_Polyarticular JIA ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868547_ReadsPerGene.out.tab SRR6868548_ReadsPerGene.out.tab SRR6868549_ReadsPerGene.out.tab SRR6868556_ReadsPerGene.out.tab SRR6868561_ReadsPerGene.out.tab SRR6868562_ReadsPerGene.out.tab SRR6868568_ReadsPerGene.out.tab SRR6868592_ReadsPerGene.out.tab SRR6868593_ReadsPerGene.out.tab SRR6868594_ReadsPerGene.out.tab SRR6868595_ReadsPerGene.out.tab SRR6868600_ReadsPerGene.out.tab SRR6868602_ReadsPerGene.out.tab SRR6868603_ReadsPerGene.out.tab SRR6868611_ReadsPerGene.out.tab SRR6868612_ReadsPerGene.out.tab SRR6868619_ReadsPerGene.out.tab SRR6868624_ReadsPerGene.out.tab SRR6868625_ReadsPerGene.out.tab SRR6868626_ReadsPerGene.out.tab SRR6868627_ReadsPerGene.out.tab SRR6868628_ReadsPerGene.out.tab SRR6868629_ReadsPerGene.out.tab SRR6868630_ReadsPerGene.out.tab SRR6868640_ReadsPerGene.out.tab SRR6868647_ReadsPerGene.out.tab SRR6868656_ReadsPerGene.out.tab SRR6868657_ReadsPerGene.out.tab SRR6868658_ReadsPerGene.out.tab SRR6868672_ReadsPerGene.out.tab SRR6868690_ReadsPerGene.out.tab SRR6868691_ReadsPerGene.out.tab SRR6868692_ReadsPerGene.out.tab SRR6868703_ReadsPerGene.out.tab SRR6868704_ReadsPerGene.out.tab SRR6868705_ReadsPerGene.out.tab SRR6868708_ReadsPerGene.out.tab SRR6868712_ReadsPerGene.out.tab SRR6868727_ReadsPerGene.out.tab SRR6868728_ReadsPerGene.out.tab SRR6868729_ReadsPerGene.out.tab SRR6868730_ReadsPerGene.out.tab SRR6868731_ReadsPerGene.out.tab SRR6868738_ReadsPerGene.out.tab SRR6868739_ReadsPerGene.out.tab SRR6868740_ReadsPerGene.out.tab SRR6868552_ReadsPerGene.out.tab SRR6868553_ReadsPerGene.out.tab SRR6868563_ReadsPerGene.out.tab SRR6868564_ReadsPerGene.out.tab SRR6868567_ReadsPerGene.out.tab SRR6868597_ReadsPerGene.out.tab SRR6868613_ReadsPerGene.out.tab SRR6868615_ReadsPerGene.out.tab SRR6868616_ReadsPerGene.out.tab SRR6868634_ReadsPerGene.out.tab SRR6868641_ReadsPerGene.out.tab SRR6868645_ReadsPerGene.out.tab SRR6868649_ReadsPerGene.out.tab SRR6868660_ReadsPerGene.out.tab SRR6868661_ReadsPerGene.out.tab SRR6868663_ReadsPerGene.out.tab SRR6868664_ReadsPerGene.out.tab SRR6868675_ReadsPerGene.out.tab SRR6868682_ReadsPerGene.out.tab SRR6868696_ReadsPerGene.out.tab SRR6868707_ReadsPerGene.out.tab SRR6868710_ReadsPerGene.out.tab SRR6868733_ReadsPerGene.out.tab SRR6868735_ReadsPerGene.out.tab SRR6868736_ReadsPerGene.out.tab SRR6868737_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Systemic_JIA_vs_Polyarticular_JIA.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Systemic_JIA_vs_Polyarticular_JIA.txt", header=F, row.names=1)
+colnames(x)<-c("Polyarticular_JIA.1","Polyarticular_JIA.2","Polyarticular_JIA.3","Polyarticular_JIA.4","Polyarticular_JIA.5","Polyarticular_JIA.6","Polyarticular_JIA.7","Polyarticular_JIA.8","Polyarticular_JIA.9","Polyarticular_JIA.10","Polyarticular_JIA.11","Polyarticular_JIA.12","Polyarticular_JIA.13","Polyarticular_JIA.14","Polyarticular_JIA.15","Polyarticular_JIA.16","Polyarticular_JIA.17","Polyarticular_JIA.18","Polyarticular_JIA.19","Polyarticular_JIA.20","Polyarticular_JIA.21","Polyarticular_JIA.22","Polyarticular_JIA.23","Polyarticular_JIA.24","Polyarticular_JIA.25","Polyarticular_JIA.26","Polyarticular_JIA.27","Polyarticular_JIA.28","Polyarticular_JIA.29","Polyarticular_JIA.30","Polyarticular_JIA.31","Polyarticular_JIA.32","Polyarticular_JIA.33","Polyarticular_JIA.34","Polyarticular_JIA.35","Polyarticular_JIA.36","Polyarticular_JIA.37","Polyarticular_JIA.38","Polyarticular_JIA.39","Polyarticular_JIA.40","Polyarticular_JIA.41","Polyarticular_JIA.42","Polyarticular_JIA.43","Polyarticular_JIA.44","Polyarticular_JIA.45","Polyarticular_JIA.46","Systemic_JIA.1","Systemic_JIA.2","Systemic_JIA.3","Systemic_JIA.4","Systemic_JIA.5","Systemic_JIA.6","Systemic_JIA.7","Systemic_JIA.8","Systemic_JIA.9","Systemic_JIA.10","Systemic_JIA.11","Systemic_JIA.12","Systemic_JIA.13","Systemic_JIA.14","Systemic_JIA.15","Systemic_JIA.16","Systemic_JIA.17","Systemic_JIA.18","Systemic_JIA.19","Systemic_JIA.20","Systemic_JIA.21","Systemic_JIA.22","Systemic_JIA.23","Systemic_JIA.24","Systemic_JIA.25","Systemic_JIA.26")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Polyarticular_JIA-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Polyarticular_JIA-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Polyarticular_JIA-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-Systemic_JIA_vs_Polyarticular_JIA-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### UC_vs_Polyarticular JIA ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868547_ReadsPerGene.out.tab SRR6868548_ReadsPerGene.out.tab SRR6868549_ReadsPerGene.out.tab SRR6868556_ReadsPerGene.out.tab SRR6868561_ReadsPerGene.out.tab SRR6868562_ReadsPerGene.out.tab SRR6868568_ReadsPerGene.out.tab SRR6868592_ReadsPerGene.out.tab SRR6868593_ReadsPerGene.out.tab SRR6868594_ReadsPerGene.out.tab SRR6868595_ReadsPerGene.out.tab SRR6868600_ReadsPerGene.out.tab SRR6868602_ReadsPerGene.out.tab SRR6868603_ReadsPerGene.out.tab SRR6868611_ReadsPerGene.out.tab SRR6868612_ReadsPerGene.out.tab SRR6868619_ReadsPerGene.out.tab SRR6868624_ReadsPerGene.out.tab SRR6868625_ReadsPerGene.out.tab SRR6868626_ReadsPerGene.out.tab SRR6868627_ReadsPerGene.out.tab SRR6868628_ReadsPerGene.out.tab SRR6868629_ReadsPerGene.out.tab SRR6868630_ReadsPerGene.out.tab SRR6868640_ReadsPerGene.out.tab SRR6868647_ReadsPerGene.out.tab SRR6868656_ReadsPerGene.out.tab SRR6868657_ReadsPerGene.out.tab SRR6868658_ReadsPerGene.out.tab SRR6868672_ReadsPerGene.out.tab SRR6868690_ReadsPerGene.out.tab SRR6868691_ReadsPerGene.out.tab SRR6868692_ReadsPerGene.out.tab SRR6868703_ReadsPerGene.out.tab SRR6868704_ReadsPerGene.out.tab SRR6868705_ReadsPerGene.out.tab SRR6868708_ReadsPerGene.out.tab SRR6868712_ReadsPerGene.out.tab SRR6868727_ReadsPerGene.out.tab SRR6868728_ReadsPerGene.out.tab SRR6868729_ReadsPerGene.out.tab SRR6868730_ReadsPerGene.out.tab SRR6868731_ReadsPerGene.out.tab SRR6868738_ReadsPerGene.out.tab SRR6868739_ReadsPerGene.out.tab SRR6868740_ReadsPerGene.out.tab SRR6868543_ReadsPerGene.out.tab SRR6868558_ReadsPerGene.out.tab SRR6868579_ReadsPerGene.out.tab SRR6868586_ReadsPerGene.out.tab SRR6868588_ReadsPerGene.out.tab SRR6868589_ReadsPerGene.out.tab SRR6868591_ReadsPerGene.out.tab SRR6868607_ReadsPerGene.out.tab SRR6868620_ReadsPerGene.out.tab SRR6868638_ReadsPerGene.out.tab SRR6868653_ReadsPerGene.out.tab SRR6868665_ReadsPerGene.out.tab SRR6868685_ReadsPerGene.out.tab SRR6868686_ReadsPerGene.out.tab SRR6868699_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-UC_vs_Polyarticular_JIA.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-UC_vs_Polyarticular_JIA.txt", header=F, row.names=1)
+colnames(x)<-c("Polyarticular_JIA.1","Polyarticular_JIA.2","Polyarticular_JIA.3","Polyarticular_JIA.4","Polyarticular_JIA.5","Polyarticular_JIA.6","Polyarticular_JIA.7","Polyarticular_JIA.8","Polyarticular_JIA.9","Polyarticular_JIA.10","Polyarticular_JIA.11","Polyarticular_JIA.12","Polyarticular_JIA.13","Polyarticular_JIA.14","Polyarticular_JIA.15","Polyarticular_JIA.16","Polyarticular_JIA.17","Polyarticular_JIA.18","Polyarticular_JIA.19","Polyarticular_JIA.20","Polyarticular_JIA.21","Polyarticular_JIA.22","Polyarticular_JIA.23","Polyarticular_JIA.24","Polyarticular_JIA.25","Polyarticular_JIA.26","Polyarticular_JIA.27","Polyarticular_JIA.28","Polyarticular_JIA.29","Polyarticular_JIA.30","Polyarticular_JIA.31","Polyarticular_JIA.32","Polyarticular_JIA.33","Polyarticular_JIA.34","Polyarticular_JIA.35","Polyarticular_JIA.36","Polyarticular_JIA.37","Polyarticular_JIA.38","Polyarticular_JIA.39","Polyarticular_JIA.40","Polyarticular_JIA.41","Polyarticular_JIA.42","Polyarticular_JIA.43","Polyarticular_JIA.44","Polyarticular_JIA.45","Polyarticular_JIA.46","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10","UC.11","UC.12","UC.13","UC.14","UC.15")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE112057-whole_blood-Stranded-UC_vs_Polyarticular_JIA-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE112057-whole_blood-Stranded-UC_vs_Polyarticular_JIA-RPKM.txt", sep="\t")
+
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE112057-whole_blood-Stranded-UC_vs_Polyarticular_JIA-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE112057-whole_blood-Stranded-UC_vs_Polyarticular_JIA-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### UC_vs_Systemic_JIA ###
+# Generate a gene matrix
+# Stranded
+paste SRR6868552_ReadsPerGene.out.tab SRR6868553_ReadsPerGene.out.tab SRR6868563_ReadsPerGene.out.tab SRR6868564_ReadsPerGene.out.tab SRR6868567_ReadsPerGene.out.tab SRR6868597_ReadsPerGene.out.tab SRR6868613_ReadsPerGene.out.tab SRR6868615_ReadsPerGene.out.tab SRR6868616_ReadsPerGene.out.tab SRR6868634_ReadsPerGene.out.tab SRR6868641_ReadsPerGene.out.tab SRR6868645_ReadsPerGene.out.tab SRR6868649_ReadsPerGene.out.tab SRR6868660_ReadsPerGene.out.tab SRR6868661_ReadsPerGene.out.tab SRR6868663_ReadsPerGene.out.tab SRR6868664_ReadsPerGene.out.tab SRR6868675_ReadsPerGene.out.tab SRR6868682_ReadsPerGene.out.tab SRR6868696_ReadsPerGene.out.tab SRR6868707_ReadsPerGene.out.tab SRR6868710_ReadsPerGene.out.tab SRR6868733_ReadsPerGene.out.tab SRR6868735_ReadsPerGene.out.tab SRR6868736_ReadsPerGene.out.tab SRR6868737_ReadsPerGene.out.tab SRR6868543_ReadsPerGene.out.tab SRR6868558_ReadsPerGene.out.tab SRR6868579_ReadsPerGene.out.tab SRR6868586_ReadsPerGene.out.tab SRR6868588_ReadsPerGene.out.tab SRR6868589_ReadsPerGene.out.tab SRR6868591_ReadsPerGene.out.tab SRR6868607_ReadsPerGene.out.tab SRR6868620_ReadsPerGene.out.tab SRR6868638_ReadsPerGene.out.tab SRR6868653_ReadsPerGene.out.tab SRR6868665_ReadsPerGene.out.tab SRR6868685_ReadsPerGene.out.tab SRR6868686_ReadsPerGene.out.tab SRR6868699_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-UC_vs_Systemic_JIA.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-UC_vs_Systemic_JIA.txt", header=F, row.names=1)
+colnames(x)<-c("Systemic_JIA.1","Systemic_JIA.2","Systemic_JIA.3","Systemic_JIA.4","Systemic_JIA.5","Systemic_JIA.6","Systemic_JIA.7","Systemic_JIA.8","Systemic_JIA.9","Systemic_JIA.10","Systemic_JIA.11","Systemic_JIA.12","Systemic_JIA.13","Systemic_JIA.14","Systemic_JIA.15","Systemic_JIA.16","Systemic_JIA.17","Systemic_JIA.18","Systemic_JIA.19","Systemic_JIA.20","Systemic_JIA.21","Systemic_JIA.22","Systemic_JIA.23","Systemic_JIA.24","Systemic_JIA.25","Systemic_JIA.26","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10","UC.11","UC.12","UC.13","UC.14","UC.15")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
