@@ -150,5 +150,3 @@ metadata <- read.csv('metadata.csv')
 metadata <- left_join(metadata, outputall, by='sample_id')
 
 write.csv(metadata, file='metadata.csv', row.names=TRUE)
-
-
