@@ -10,10 +10,23 @@ nf-core list //lists available pipelines
 nextflow pull nf-core/fetchngs
 nextflow pull nf-core/rnaseq
 
-nextflow run nf-core/fetchngs --input IDs.csv --outdir out-nfcore -profile docker --nf_core_pipeline rnaseq --max_memory 7GB -resume
+nextflow run nf-core/fetchngs --input IDs.csv --outdir out-nfcore -profile conda --nf_core_pipeline rnaseq -resume
 
 // profile can be set to docker, singularity or conda
 // to find out max_memory available run nproc or lcspu
 // resume ensures previously run and successful tasks are cached
 
-nextflow run nf-core/rnaseq --input samplesheet.csv --aligner star_salmon --outdir results --genomeGRCh38 -profile docker -resume 
+// CUSTOM GENOME (GRCh38.107) must be downloaded.
+
+wget https://ftp.ensembl.org/pub/release-107/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+wget https://ftp.ensembl.org/pub/release-107/gtf/homo_sapiens/Homo_sapiens.GRCh38.107.gtf.gz
+
+nextflow run nf-core/rnaseq \
+	--input samplesheet.csv \
+	--fasta Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz \
+    	--gtf Homo_sapiens.GRCh38.107.gtf.gz \
+	--save_reference \
+	--aligner star_salmon \
+	--outdir results \
+	-profile conda \
+	-resume 
