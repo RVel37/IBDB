@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-// usage: nextflow run preprocess.nf
+// usage: nextflow run nfBRN.nf 
 
 // CONSTANTS
 nextflow.enable.dsl = 1
@@ -15,13 +15,13 @@ METADATA_CSV = "metadata.csv"
 
 MAX_RETRIES = 3  // Max number of retries on fail for every process instance
 
-PREFETCH_MAXFORKS   = 2 
-FASTQ_MAXFORKS      = 6  
-FASTP_MAXFORKS      = 6
-STAR_ALIGN_MAXFORKS = 4
+PREFETCH_MAXFORKS   = 2  // Limit parallel prefetch calls so ncbi doesn't get mad
+FASTQ_MAXFORKS      = 6  // Limit parallel calls for RAM/IO constraints
+FASTP_MAXFORKS      = 8
+STAR_ALIGN_MAXFORKS = 6
 
-STAR_GENOME_THREADS = 40
-STAR_ALIGN_THREADS  = 20
+STAR_GENOME_THREADS = 8
+STAR_ALIGN_THREADS  = 8
 
 FA_URL = "https://ftp.ensembl.org/pub/release-107/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz"
 FA_FILENAME = "Homo_sapiens.GRCh38.dna.primary_assembly.fa"

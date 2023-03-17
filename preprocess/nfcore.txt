@@ -1,6 +1,6 @@
 // Nextflow (nf-core) RNA-seq analysis starting from SRA IDs
 
-conda install -c bioconda nf-core 
+conda install -c bioconda nf-core
 
 nf-core --help
 nf-core list //lists available pipelines
@@ -10,7 +10,7 @@ nf-core list //lists available pipelines
 nextflow pull nf-core/fetchngs
 nextflow pull nf-core/rnaseq
 
-nextflow run nf-core/fetchngs --input IDs.csv --outdir out-nfcore -profile conda --nf_core_pipeline rnaseq -resume
+nextflow run nf-core/fetchngs --input metadata.csv --outdir out-nfcore -profile conda --nf_core_pipeline rnaseq -resume
 
 // profile can be set to docker, singularity or conda
 // to find out max_memory available run nproc or lcspu
