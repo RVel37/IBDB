@@ -90,12 +90,16 @@ for (study_id in unique_studies) {
 
 #work in progress
 
+#-------------------------
+#RSQLite
 
-#set up connection to in-memory RSQLite database
-conn <- dbConnect(RSQLite::SQLite(), ":memory:")
+#store permanently on disk
+conn <- dbConnect(RSQLite::SQLite(), "appdata.sqlite")
 
-#copy data into RSQLite databas
-dbWriteTable(con, "App_data", app_data)
+#write data to table
+RSQLite::dbWriteTable(conn, "App_data", app_data)
 
-dbListTables(con) #check what tables exist in db
-dbReadTable(con, "App_data")
+dbListTables(conn) #check what tables exist in db
+dbReadTable(conn, "App_data") #see table contents
+dbRollback(conn) #restore previous version of a db
+
