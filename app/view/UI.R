@@ -1,27 +1,25 @@
-
 box::use(
-  app/logic/ui_globals[ExplorePageContents,footerHTML,DownloadPageContents],
-  app/logic/utils,
-  app/logic/data[deg_contrasts],
-  #server code
-  
+  shiny[navbarPage, tags, icon, tagList, ...],
+  bslib[bs_theme],
+  shinycssloaders[...],
+  prompter[...],
+  dplyr[...],
+  tidyr[...],
+  pheatmap[...],
+  tibble[...],
+  futile.logger[...],
+  ggplot2[...],
+  tidyverse[...]
 )
 
-box::use(
-  shiny[...], 
-  htmlwidgets[...], 
-  bslib[bs_theme], 
-  htmltools[HTML, includeHTML]
-)
 
-#'@export
-ui <- function(id){
+#' @export
+ui <- function(id) {
   ns <- NS(id)
   tagList(
-    
     navbarPage(
-      title = "IBD-DB",
-      id = "IBD-DB",
+      title = "IBDB",
+      id = "IBDB",
       theme = bslib::bs_theme(bootswatch = "lumen"),
       tabPanel(
         title = "Home",
@@ -33,27 +31,27 @@ ui <- function(id){
       tabPanel(
         title = "Explore",
         id = "explore-tab",
-        icon = icon('table'),
-        ExplorePageContents(deg_contrasts) #ExplorePageContents(results)
+        icon = icon("table"),
+        ExplorePageContents(deg_contrasts) # ExplorePageContents(results)
       ),
       tabPanel(
         title = "Download",
         id = "download-tab",
-        icon = icon('download'),
+        icon = icon("download"),
         DownloadPageContents()
       ),
       tabPanel(
         title = "Documentation",
         id = "docs-tab",
-        icon = icon('file-alt'),
+        icon = icon("file-alt"),
         tags$iframe(
-          src = './documentation.html',
-          width = '100%', height = '800px',
+          src = "./documentation.html",
+          width = "100%", height = "800px",
           frameborder = 0,
-          scrolling = 'auto'
+          scrolling = "auto"
         )
       )
-    ), 
+    ),
     tags$footer(HTML(footerHTML()))
   )
 }

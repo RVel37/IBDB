@@ -1,7 +1,7 @@
 box::use(
   shiny[span],
   prompter[add_prompt],
-  htmltools[tagList,HTML],
+  htmltools[tagList, HTML],
 )
 
 #' @export
@@ -17,8 +17,8 @@ helpButton <- function(message) {
 
 #' @export
 # Make headers
-makeHeaders <- function(title, message, fs=1.3) {
+makeHeaders <- function(title, message, fs = 1.3) {
   tagList(
-    span(span(title, style=paste0("font-size: ", fs, "em;")), helpButton(message))
+    span(span(title, style = paste0("font-size: ", fs, "em;")), helpButton(message))
   )
 }

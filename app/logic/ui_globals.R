@@ -1,30 +1,29 @@
 box::use(
-  shiny[HTML,tags,...], 
+  shiny[HTML, tags, ...],
   shinycssloaders[withSpinner],
   htmltools,
   DT[DTOutput],
   tidyverse[...],
   plotly[plotlyOutput],
-  dplyr[pull,...],
+  dplyr[pull, ...],
 )
 
 box::use(
-  
-  app/logic/data[
-    #links
-    GEO_BASE,GENECARDS_BASE,S3_HTTPS,
-    #raw data
+  app / logic / data[
+    # links
+    GEO_BASE, GENECARDS_BASE, S3_HTTPS,
+    # raw data
     app_data,
-    #processed data
-    degs135,degs126],
-  
-  app/logic/utils[makeHeaders,helpButton]
+    # processed data
+    degs135, degs126
+  ],
+  app / logic / utils[makeHeaders, helpButton]
 )
 
 
-PAGE_PLOT_WIDTH = "96%"
-PAGE_PLOT_HEIGHT = "650px"
-ANNO_PLOT_HEIGHT = "1000px"
+PAGE_PLOT_WIDTH <- "96%"
+PAGE_PLOT_HEIGHT <- "650px"
+ANNO_PLOT_HEIGHT <- "1000px"
 
 #' @export
 ExplorePageContents <- function(deg_contrasts) {
@@ -45,21 +44,23 @@ ExplorePageContents <- function(deg_contrasts) {
 
 #' @export
 GeneTable_panel <- function(deg_contrasts) {
-  study_ids <- deg_contrasts %>% 
-    pull(study_id) %>% 
+  study_ids <- deg_contrasts %>%
+    pull(study_id) %>%
     unique()
-  
+
   tagList(
     fluidRow(
-      column(width = 12,
-             h3("Explore results"),
-             hr())
+      column(
+        width = 12,
+        h3("Explore results"),
+        hr()
+      )
     ),
     fluidRow(
       column(
         width = 6,
         selectInput(
-          inputId = "selectStudy", 
+          inputId = "selectStudy",
           label = "Study",
           selected = study_ids[1],
           choices = study_ids
@@ -77,9 +78,9 @@ GeneTable_panel <- function(deg_contrasts) {
         width = 12,
         makeHeaders(
           title = "Results Table ",
-          message=paste0("IBD RNA-Seq DGE analysis results.")
+          message = paste0("IBD RNA-Seq DGE analysis results.")
         ),
-        withSpinner(DT::DTOutput('degTable'))
+        withSpinner(DT::DTOutput("degTable"))
       )
     )
   )
@@ -93,19 +94,19 @@ OutputPanel_tabset <- function() {
       id = "expTabset",
       tabPanel(
         title = "Expression",
-        icon=icon('chart-bar'),
+        icon = icon("chart-bar"),
         Expression_panel()
       ),
       tabPanel(
         title = "Volcano plot",
-        icon=icon('mountain'),
+        icon = icon("mountain"),
         fluidRow(
           column(
             width = 6,
             hr(),
             makeHeaders(
               title = "Volcano plot ",
-              message=paste0("Volcano plot showing the differential gene expression results.")
+              message = paste0("Volcano plot showing the differential gene expression results.")
             ),
             hr()
           )
@@ -121,17 +122,17 @@ OutputPanel_tabset <- function() {
       ),
       tabPanel(
         title = "Heatmap",
-        icon=icon("burn"),
+        icon = icon("burn"),
         Heatmap_panel()
       ),
       tabPanel(
         title = "Pathway analysis",
-        icon=icon("project-diagram"),
+        icon = icon("project-diagram"),
         Enrich_panel()
       ),
       tabPanel(
         title = "Comparison",
-        icon=icon("adjust"),
+        icon = icon("adjust"),
         Upset_panel()
       )
     )
@@ -147,7 +148,7 @@ Expression_panel <- function() {
         hr(),
         makeHeaders(
           title = "Gene counts ",
-          message=paste0("Gene count plots for samples in the selected study.")
+          message = paste0("Gene count plots for samples in the selected study.")
         ),
         hr()
       )
@@ -158,7 +159,7 @@ Expression_panel <- function() {
         selectInput(
           inputId = "selectCTS",
           choices = c("CPM", "TPM", "RPKM"),
-          selected = "CPM", 
+          selected = "CPM",
           label = "Normalization"
         )
       )
@@ -181,7 +182,7 @@ Heatmap_panel <- function() {
         hr(),
         makeHeaders(
           title = "Heatmap ",
-          message=paste0("Heatmap of top DEG count plots for samples in the selected study.")
+          message = paste0("Heatmap of top DEG count plots for samples in the selected study.")
         ),
         hr()
       )
@@ -192,7 +193,7 @@ Heatmap_panel <- function() {
         selectInput(
           inputId = "selectCTS2",
           choices = c("CPM", "TPM", "RPKM"),
-          selected = "CPM", 
+          selected = "CPM",
           label = "Normalization"
         )
       )
@@ -218,7 +219,7 @@ Enrich_panel <- function() {
         hr(),
         makeHeaders(
           title = "KEGG enrichment ",
-          message=paste0("Heatmap of top hits from KEGG pathway enrichment (via 'enrichr' web service) in over- and under-expressed genes.")
+          message = paste0("Heatmap of top hits from KEGG pathway enrichment (via 'enrichr' web service) in over- and under-expressed genes.")
         ),
         hr()
       )
@@ -229,7 +230,7 @@ Enrich_panel <- function() {
         selectInput(
           inputId = "selectEM",
           choices = c("Combined.Score", "Odds.Ratio", "Padj (-log10)"),
-          selected = "Combined.Score", 
+          selected = "Combined.Score",
           label = "Enrichment Metric"
         )
       )
@@ -255,7 +256,7 @@ Upset_panel <- function() {
         hr(),
         makeHeaders(
           title = "DEG comparison ",
-          message=paste0("UpSet plot comparing over- and under-expressed genes between studies.")
+          message = paste0("UpSet plot comparing over- and under-expressed genes between studies.")
         ),
         hr()
       )
@@ -266,7 +267,7 @@ Upset_panel <- function() {
         selectInput(
           inputId = "upsetSelect",
           choices = c("Over-expressed", "Under-expressed"),
-          selected = "Over-expressed", 
+          selected = "Over-expressed",
           label = "DEG type"
         )
       )
@@ -287,22 +288,22 @@ Upset_panel <- function() {
 DownloadPageContents <- function() {
   md <- paste0("
   ## *PLACEHOLDER data from LiverDB*
-  
+
   Code used to process the data is available in
   the LiverDB <a href='https://github.com/Bishop-Laboratory/LiverDB/' target='_blank'>GitHub repository</a>.
-  
+
   Data are stored on a publicly-accessible AWS bucket and can be downloaded in bulk
   via the following command (assumes you have AWS CLI installed):
-  
+
   ```shell
   aws s3 sync --no-sign-request s3://liverdb-data/ liverdb-data/
   ```
-  
+
   <details>
   <summary><strong>Data details</strong></summary>
-  
+
   <br>
-  
+
   * **metadata.csv**
     - A CSV file detailing the samples in the dataset
     - Structure:
@@ -324,7 +325,7 @@ DownloadPageContents <- function() {
       * *study_id*
         - The GEO ID for the study from which data were derived
       * *numerator*
-        - In DGE analysis, the numerator 
+        - In DGE analysis, the numerator
       * *denominator*
         - In DGE analysis, the denominator
   * **GSE126848_degs.csv.gz** and **GSE135251_degs.csv.gz**
@@ -341,7 +342,7 @@ DownloadPageContents <- function() {
       * *FDR*
         - The significance of the differential gene expression, with multiple testing correction
   * **GSE126848_gene_exp.csv.gz** and **GSE135251_gene_exp.csv.gz**
-    - GZ-compressed CSV files containing the expression levels for each gene within each sample. 
+    - GZ-compressed CSV files containing the expression levels for each gene within each sample.
     - Structure:
       * *gene_id*
         - Ensembl gene ID
@@ -362,7 +363,7 @@ DownloadPageContents <- function() {
       * *Term*
         - KEGG pathway analyzed
       * *Overlap*
-        - Proportion of genes from tested 
+        - Proportion of genes from tested
       * *P.value*
         - P value from enrichment test
       * *Adjusted.P.value*
@@ -383,13 +384,13 @@ DownloadPageContents <- function() {
         - DEG type on which enrichment was calculated (over-expressed or under-expressed)
   </details>
   ")
-  
+
   tagList(
     fluidRow(
       column(
         width = 12,
         shiny::markdown(md),
-        DT::dataTableOutput('downloadLinks')
+        DT::dataTableOutput("downloadLinks")
       )
     ),
     br()
@@ -421,9 +422,9 @@ footerHTML <- function() {
   "
     <footer class='footer'>
       <div class='footer-copyright text-center py-3'><span style='color:white'>LiverDB © 2022 Copyright:</span>
-        <a href='http://heartlncrna.github.io/' target='_blank'>heartlncrna</a> 
+        <a href='http://heartlncrna.github.io/' target='_blank'>heartlncrna</a>
         <span>&nbsp</span>
-        <a href='https://github.com/Bishop-Laboratory/LiverDB/' target='_blank'> 
+        <a href='https://github.com/Bishop-Laboratory/LiverDB/' target='_blank'>
           <img src='GitHub-Mark-Light-64px.png' height='20'>
         </a>
       </div>

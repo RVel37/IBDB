@@ -1,4 +1,3 @@
-
 GEO_BASE <- "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="
 GENECARDS_BASE <- "https://www.genecards.org/cgi-bin/carddisp.pl?gene="
 S3_HTTPS <- "https://liverdb-data.s3.amazonaws.com/"
