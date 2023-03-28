@@ -4,15 +4,18 @@ box::use(
   shinythemes[shinytheme]
   )
 
+box::use(
+  app/view/home,
+)
 
 #' @export
 ui <- function(id) {
   ns <- NS(id)
   
 navbarPage(
-  theme = shinytheme("slate"),
+  theme = shinytheme("yeti"),
   "IBDB",
-  tabPanel ("home", "hi"),
+  tabPanel ("home", home$ui(ns("home"))),
   tabPanel ("Explore"),
   tabPanel ("Download"),
   tabPanel ("Documentation")
