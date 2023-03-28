@@ -1,6 +1,8 @@
 box::use(
-  shiny[tabPanel,fluidPage,NS,icon,br,includeHTML],
+  shiny[tagList,tags,tabPanel,fluidPage,
+        NS,icon,br,includeHTML,HTML],
 )
+
 
 #'@export
 ui <- function(id) {
