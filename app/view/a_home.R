@@ -3,7 +3,6 @@ box::use(
         NS,icon,br,includeHTML,HTML],
 )
 
-
 #'@export
 ui <- function(id) {
   ns <- NS(id)
@@ -16,4 +15,3 @@ ui <- function(id) {
   fluidPage(br(), includeHTML("www/home.html"))
   )
 }
-

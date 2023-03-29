@@ -1,0 +1,225 @@
+
+### All_Samples ###
+# Generate a gene matrix
+# Stranded
+paste SRR3714677_ReadsPerGene.out.tab SRR3714678_ReadsPerGene.out.tab SRR3714679_ReadsPerGene.out.tab SRR3714728_ReadsPerGene.out.tab SRR3714768_ReadsPerGene.out.tab SRR3714647_ReadsPerGene.out.tab SRR3714672_ReadsPerGene.out.tab SRR3714711_ReadsPerGene.out.tab SRR3714658_ReadsPerGene.out.tab SRR3714668_ReadsPerGene.out.tab SRR3714688_ReadsPerGene.out.tab SRR3714739_ReadsPerGene.out.tab SRR3714758_ReadsPerGene.out.tab SRR3714687_ReadsPerGene.out.tab SRR3714722_ReadsPerGene.out.tab SRR3714733_ReadsPerGene.out.tab SRR3714742_ReadsPerGene.out.tab SRR3714743_ReadsPerGene.out.tab SRR3714703_ReadsPerGene.out.tab SRR3714706_ReadsPerGene.out.tab SRR3714633_ReadsPerGene.out.tab SRR3714640_ReadsPerGene.out.tab SRR3714645_ReadsPerGene.out.tab SRR3714646_ReadsPerGene.out.tab SRR3714652_ReadsPerGene.out.tab SRR3714653_ReadsPerGene.out.tab SRR3714657_ReadsPerGene.out.tab SRR3714664_ReadsPerGene.out.tab SRR3714665_ReadsPerGene.out.tab SRR3714680_ReadsPerGene.out.tab SRR3714691_ReadsPerGene.out.tab SRR3714693_ReadsPerGene.out.tab SRR3714704_ReadsPerGene.out.tab SRR3714738_ReadsPerGene.out.tab SRR3714745_ReadsPerGene.out.tab SRR3714754_ReadsPerGene.out.tab SRR3714766_ReadsPerGene.out.tab SRR3714642_ReadsPerGene.out.tab SRR3714670_ReadsPerGene.out.tab SRR3714671_ReadsPerGene.out.tab SRR3714673_ReadsPerGene.out.tab SRR3714682_ReadsPerGene.out.tab SRR3714683_ReadsPerGene.out.tab SRR3714694_ReadsPerGene.out.tab SRR3714695_ReadsPerGene.out.tab SRR3714701_ReadsPerGene.out.tab SRR3714730_ReadsPerGene.out.tab SRR3714762_ReadsPerGene.out.tab SRR3714631_ReadsPerGene.out.tab SRR3714648_ReadsPerGene.out.tab SRR3714655_ReadsPerGene.out.tab SRR3714656_ReadsPerGene.out.tab SRR3714669_ReadsPerGene.out.tab SRR3714681_ReadsPerGene.out.tab SRR3714699_ReadsPerGene.out.tab SRR3714752_ReadsPerGene.out.tab SRR3714767_ReadsPerGene.out.tab SRR3714696_ReadsPerGene.out.tab SRR3714741_ReadsPerGene.out.tab SRR3714759_ReadsPerGene.out.tab SRR3714760_ReadsPerGene.out.tab SRR3714700_ReadsPerGene.out.tab SRR3714643_ReadsPerGene.out.tab SRR3714659_ReadsPerGene.out.tab SRR3714684_ReadsPerGene.out.tab SRR3714685_ReadsPerGene.out.tab SRR3714689_ReadsPerGene.out.tab SRR3714702_ReadsPerGene.out.tab SRR3714705_ReadsPerGene.out.tab SRR3714710_ReadsPerGene.out.tab SRR3714715_ReadsPerGene.out.tab SRR3714716_ReadsPerGene.out.tab SRR3714719_ReadsPerGene.out.tab SRR3714731_ReadsPerGene.out.tab SRR3714734_ReadsPerGene.out.tab SRR3714744_ReadsPerGene.out.tab SRR3714747_ReadsPerGene.out.tab SRR3714749_ReadsPerGene.out.tab SRR3714750_ReadsPerGene.out.tab SRR3714751_ReadsPerGene.out.tab SRR3714756_ReadsPerGene.out.tab SRR3714635_ReadsPerGene.out.tab SRR3714641_ReadsPerGene.out.tab SRR3714692_ReadsPerGene.out.tab SRR3714714_ReadsPerGene.out.tab SRR3714729_ReadsPerGene.out.tab SRR3714732_ReadsPerGene.out.tab SRR3714736_ReadsPerGene.out.tab SRR3714764_ReadsPerGene.out.tab SRR3714654_ReadsPerGene.out.tab SRR3714690_ReadsPerGene.out.tab SRR3714644_ReadsPerGene.out.tab SRR3714765_ReadsPerGene.out.tab SRR3714636_ReadsPerGene.out.tab SRR3714639_ReadsPerGene.out.tab SRR3714662_ReadsPerGene.out.tab SRR3714675_ReadsPerGene.out.tab SRR3714686_ReadsPerGene.out.tab SRR3714707_ReadsPerGene.out.tab SRR3714713_ReadsPerGene.out.tab SRR3714721_ReadsPerGene.out.tab SRR3714723_ReadsPerGene.out.tab SRR3714746_ReadsPerGene.out.tab SRR3714755_ReadsPerGene.out.tab SRR3714763_ReadsPerGene.out.tab SRR3714634_ReadsPerGene.out.tab SRR3714637_ReadsPerGene.out.tab SRR3714649_ReadsPerGene.out.tab SRR3714650_ReadsPerGene.out.tab SRR3714661_ReadsPerGene.out.tab SRR3714676_ReadsPerGene.out.tab SRR3714697_ReadsPerGene.out.tab SRR3714698_ReadsPerGene.out.tab SRR3714708_ReadsPerGene.out.tab SRR3714709_ReadsPerGene.out.tab SRR3714712_ReadsPerGene.out.tab SRR3714717_ReadsPerGene.out.tab SRR3714718_ReadsPerGene.out.tab SRR3714724_ReadsPerGene.out.tab SRR3714727_ReadsPerGene.out.tab SRR3714735_ReadsPerGene.out.tab SRR3714737_ReadsPerGene.out.tab SRR3714740_ReadsPerGene.out.tab SRR3714748_ReadsPerGene.out.tab SRR3714753_ReadsPerGene.out.tab SRR3714757_ReadsPerGene.out.tab SRR3714761_ReadsPerGene.out.tab SRR3714632_ReadsPerGene.out.tab SRR3714674_ReadsPerGene.out.tab SRR3714725_ReadsPerGene.out.tab SRR3714651_ReadsPerGene.out.tab SRR3714660_ReadsPerGene.out.tab SRR3714663_ReadsPerGene.out.tab SRR3714638_ReadsPerGene.out.tab SRR3714726_ReadsPerGene.out.tab SRR3714666_ReadsPerGene.out.tab SRR3714667_ReadsPerGene.out.tab SRR3714720_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300,304,308,312,316,320,324,328,332,336,340,344,348,352,356,360,364,368,372,376,380,384,388,392,396,400,404,408,412,416,420,424,428,432,436,440,444,448,452,456,460,464,468,472,476,480,484,488,492,496,500,504,508,512,516,520,524,528,532,536,540,544,548,552,556 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-All_Samples.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-All_Samples.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Control.10","Control.11","Control.12","Control.13","Control.14","Control.15","Control.16","Control.17","Control.18","Control.19","Control.20","Control.21","Control.22","Control.23","Control.24","Control.25","Control.26","Control.27","Control.28","Control.29","Control.30","Control.31","Control.32","Control.33","Control.34","Control.35","Control.36","Control.37","Control.38","Control.39","Control.40","Control.41","Control.42","Control.43","Control.44","Control.45","Control.46","Control.47","Control.48","Control.49","Control.50","Control.51","Control.52","Control.53","Control.54","Control.55","Control.56","Control.57","Control.58","Control.59","Control.60","Control.61","Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","Crohn.10","Crohn.11","Crohn.12","Crohn.13","Crohn.14","Crohn.15","Crohn.16","Crohn.17","Crohn.18","Crohn.19","Crohn.20","Crohn.21","Crohn.22","Crohn.23","Crohn.24","Crohn.25","Crohn.26","Crohn.27","Crohn.28","Crohn.29","Crohn.30","Crohn.31","Crohn.32","Crohn.33","Crohn.34","Crohn.35","Crohn.36","Crohn.37","Crohn.38","Crohn.39","Crohn.40","Crohn.41","Crohn.42","Crohn.43","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10","UC.11","UC.12","UC.13","UC.14","UC.15","UC.16","UC.17","UC.18","UC.19","UC.20","UC.21","UC.22","UC.23","UC.24","UC.25","UC.26","UC.27","UC.28","UC.29","UC.30","UC.31","UC.32","UC.33","UC.34")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE83687-bowel_resection-Stranded-All_Samples-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE83687-bowel_resection-Stranded-All_Samples-RPKM.txt", sep="\t")
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE83687-bowel_resection-Stranded-All_Samples-TPM.txt", sep="\t")
+
+q()
+
+
+
+### Crohn_vs_Control ###
+# Generate a gene matrix
+# Stranded
+paste SRR3714677_ReadsPerGene.out.tab SRR3714678_ReadsPerGene.out.tab SRR3714679_ReadsPerGene.out.tab SRR3714728_ReadsPerGene.out.tab SRR3714768_ReadsPerGene.out.tab SRR3714647_ReadsPerGene.out.tab SRR3714672_ReadsPerGene.out.tab SRR3714711_ReadsPerGene.out.tab SRR3714658_ReadsPerGene.out.tab SRR3714668_ReadsPerGene.out.tab SRR3714688_ReadsPerGene.out.tab SRR3714739_ReadsPerGene.out.tab SRR3714758_ReadsPerGene.out.tab SRR3714687_ReadsPerGene.out.tab SRR3714722_ReadsPerGene.out.tab SRR3714733_ReadsPerGene.out.tab SRR3714742_ReadsPerGene.out.tab SRR3714743_ReadsPerGene.out.tab SRR3714703_ReadsPerGene.out.tab SRR3714706_ReadsPerGene.out.tab SRR3714633_ReadsPerGene.out.tab SRR3714640_ReadsPerGene.out.tab SRR3714645_ReadsPerGene.out.tab SRR3714646_ReadsPerGene.out.tab SRR3714652_ReadsPerGene.out.tab SRR3714653_ReadsPerGene.out.tab SRR3714657_ReadsPerGene.out.tab SRR3714664_ReadsPerGene.out.tab SRR3714665_ReadsPerGene.out.tab SRR3714680_ReadsPerGene.out.tab SRR3714691_ReadsPerGene.out.tab SRR3714693_ReadsPerGene.out.tab SRR3714704_ReadsPerGene.out.tab SRR3714738_ReadsPerGene.out.tab SRR3714745_ReadsPerGene.out.tab SRR3714754_ReadsPerGene.out.tab SRR3714766_ReadsPerGene.out.tab SRR3714642_ReadsPerGene.out.tab SRR3714670_ReadsPerGene.out.tab SRR3714671_ReadsPerGene.out.tab SRR3714673_ReadsPerGene.out.tab SRR3714682_ReadsPerGene.out.tab SRR3714683_ReadsPerGene.out.tab SRR3714694_ReadsPerGene.out.tab SRR3714695_ReadsPerGene.out.tab SRR3714701_ReadsPerGene.out.tab SRR3714730_ReadsPerGene.out.tab SRR3714762_ReadsPerGene.out.tab SRR3714631_ReadsPerGene.out.tab SRR3714648_ReadsPerGene.out.tab SRR3714655_ReadsPerGene.out.tab SRR3714656_ReadsPerGene.out.tab SRR3714669_ReadsPerGene.out.tab SRR3714681_ReadsPerGene.out.tab SRR3714699_ReadsPerGene.out.tab SRR3714752_ReadsPerGene.out.tab SRR3714767_ReadsPerGene.out.tab SRR3714696_ReadsPerGene.out.tab SRR3714741_ReadsPerGene.out.tab SRR3714759_ReadsPerGene.out.tab SRR3714760_ReadsPerGene.out.tab SRR3714700_ReadsPerGene.out.tab SRR3714643_ReadsPerGene.out.tab SRR3714659_ReadsPerGene.out.tab SRR3714684_ReadsPerGene.out.tab SRR3714685_ReadsPerGene.out.tab SRR3714689_ReadsPerGene.out.tab SRR3714702_ReadsPerGene.out.tab SRR3714705_ReadsPerGene.out.tab SRR3714710_ReadsPerGene.out.tab SRR3714715_ReadsPerGene.out.tab SRR3714716_ReadsPerGene.out.tab SRR3714719_ReadsPerGene.out.tab SRR3714731_ReadsPerGene.out.tab SRR3714734_ReadsPerGene.out.tab SRR3714744_ReadsPerGene.out.tab SRR3714747_ReadsPerGene.out.tab SRR3714749_ReadsPerGene.out.tab SRR3714750_ReadsPerGene.out.tab SRR3714751_ReadsPerGene.out.tab SRR3714756_ReadsPerGene.out.tab SRR3714635_ReadsPerGene.out.tab SRR3714641_ReadsPerGene.out.tab SRR3714692_ReadsPerGene.out.tab SRR3714714_ReadsPerGene.out.tab SRR3714729_ReadsPerGene.out.tab SRR3714732_ReadsPerGene.out.tab SRR3714736_ReadsPerGene.out.tab SRR3714764_ReadsPerGene.out.tab SRR3714654_ReadsPerGene.out.tab SRR3714690_ReadsPerGene.out.tab SRR3714644_ReadsPerGene.out.tab SRR3714765_ReadsPerGene.out.tab SRR3714636_ReadsPerGene.out.tab SRR3714639_ReadsPerGene.out.tab SRR3714662_ReadsPerGene.out.tab SRR3714675_ReadsPerGene.out.tab SRR3714686_ReadsPerGene.out.tab SRR3714707_ReadsPerGene.out.tab SRR3714713_ReadsPerGene.out.tab SRR3714721_ReadsPerGene.out.tab SRR3714723_ReadsPerGene.out.tab SRR3714746_ReadsPerGene.out.tab SRR3714755_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300,304,308,312,316,320,324,328,332,336,340,344,348,352,356,360,364,368,372,376,380,384,388,392,396,400,404,408,412,416,420 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-Crohn_vs_Control.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-Crohn_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Control.10","Control.11","Control.12","Control.13","Control.14","Control.15","Control.16","Control.17","Control.18","Control.19","Control.20","Control.21","Control.22","Control.23","Control.24","Control.25","Control.26","Control.27","Control.28","Control.29","Control.30","Control.31","Control.32","Control.33","Control.34","Control.35","Control.36","Control.37","Control.38","Control.39","Control.40","Control.41","Control.42","Control.43","Control.44","Control.45","Control.46","Control.47","Control.48","Control.49","Control.50","Control.51","Control.52","Control.53","Control.54","Control.55","Control.56","Control.57","Control.58","Control.59","Control.60","Control.61","Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","Crohn.10","Crohn.11","Crohn.12","Crohn.13","Crohn.14","Crohn.15","Crohn.16","Crohn.17","Crohn.18","Crohn.19","Crohn.20","Crohn.21","Crohn.22","Crohn.23","Crohn.24","Crohn.25","Crohn.26","Crohn.27","Crohn.28","Crohn.29","Crohn.30","Crohn.31","Crohn.32","Crohn.33","Crohn.34","Crohn.35","Crohn.36","Crohn.37","Crohn.38","Crohn.39","Crohn.40","Crohn.41","Crohn.42","Crohn.43")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE83687-bowel_resection-Stranded-Crohn_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE83687-bowel_resection-Stranded-Crohn_vs_Control-RPKM.txt", sep="\t")
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE83687-bowel_resection-Stranded-Crohn_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE83687-bowel_resection-Stranded-Crohn_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### UC_vs_Control ###
+# Generate a gene matrix
+# Stranded
+paste SRR3714677_ReadsPerGene.out.tab SRR3714678_ReadsPerGene.out.tab SRR3714679_ReadsPerGene.out.tab SRR3714728_ReadsPerGene.out.tab SRR3714768_ReadsPerGene.out.tab SRR3714647_ReadsPerGene.out.tab SRR3714672_ReadsPerGene.out.tab SRR3714711_ReadsPerGene.out.tab SRR3714658_ReadsPerGene.out.tab SRR3714668_ReadsPerGene.out.tab SRR3714688_ReadsPerGene.out.tab SRR3714739_ReadsPerGene.out.tab SRR3714758_ReadsPerGene.out.tab SRR3714687_ReadsPerGene.out.tab SRR3714722_ReadsPerGene.out.tab SRR3714733_ReadsPerGene.out.tab SRR3714742_ReadsPerGene.out.tab SRR3714743_ReadsPerGene.out.tab SRR3714703_ReadsPerGene.out.tab SRR3714706_ReadsPerGene.out.tab SRR3714633_ReadsPerGene.out.tab SRR3714640_ReadsPerGene.out.tab SRR3714645_ReadsPerGene.out.tab SRR3714646_ReadsPerGene.out.tab SRR3714652_ReadsPerGene.out.tab SRR3714653_ReadsPerGene.out.tab SRR3714657_ReadsPerGene.out.tab SRR3714664_ReadsPerGene.out.tab SRR3714665_ReadsPerGene.out.tab SRR3714680_ReadsPerGene.out.tab SRR3714691_ReadsPerGene.out.tab SRR3714693_ReadsPerGene.out.tab SRR3714704_ReadsPerGene.out.tab SRR3714738_ReadsPerGene.out.tab SRR3714745_ReadsPerGene.out.tab SRR3714754_ReadsPerGene.out.tab SRR3714766_ReadsPerGene.out.tab SRR3714642_ReadsPerGene.out.tab SRR3714670_ReadsPerGene.out.tab SRR3714671_ReadsPerGene.out.tab SRR3714673_ReadsPerGene.out.tab SRR3714682_ReadsPerGene.out.tab SRR3714683_ReadsPerGene.out.tab SRR3714694_ReadsPerGene.out.tab SRR3714695_ReadsPerGene.out.tab SRR3714701_ReadsPerGene.out.tab SRR3714730_ReadsPerGene.out.tab SRR3714762_ReadsPerGene.out.tab SRR3714631_ReadsPerGene.out.tab SRR3714648_ReadsPerGene.out.tab SRR3714655_ReadsPerGene.out.tab SRR3714656_ReadsPerGene.out.tab SRR3714669_ReadsPerGene.out.tab SRR3714681_ReadsPerGene.out.tab SRR3714699_ReadsPerGene.out.tab SRR3714752_ReadsPerGene.out.tab SRR3714767_ReadsPerGene.out.tab SRR3714696_ReadsPerGene.out.tab SRR3714741_ReadsPerGene.out.tab SRR3714759_ReadsPerGene.out.tab SRR3714760_ReadsPerGene.out.tab SRR3714763_ReadsPerGene.out.tab SRR3714634_ReadsPerGene.out.tab SRR3714637_ReadsPerGene.out.tab SRR3714649_ReadsPerGene.out.tab SRR3714650_ReadsPerGene.out.tab SRR3714661_ReadsPerGene.out.tab SRR3714676_ReadsPerGene.out.tab SRR3714697_ReadsPerGene.out.tab SRR3714698_ReadsPerGene.out.tab SRR3714708_ReadsPerGene.out.tab SRR3714709_ReadsPerGene.out.tab SRR3714712_ReadsPerGene.out.tab SRR3714717_ReadsPerGene.out.tab SRR3714718_ReadsPerGene.out.tab SRR3714724_ReadsPerGene.out.tab SRR3714727_ReadsPerGene.out.tab SRR3714735_ReadsPerGene.out.tab SRR3714737_ReadsPerGene.out.tab SRR3714740_ReadsPerGene.out.tab SRR3714748_ReadsPerGene.out.tab SRR3714753_ReadsPerGene.out.tab SRR3714757_ReadsPerGene.out.tab SRR3714761_ReadsPerGene.out.tab SRR3714632_ReadsPerGene.out.tab SRR3714674_ReadsPerGene.out.tab SRR3714725_ReadsPerGene.out.tab SRR3714651_ReadsPerGene.out.tab SRR3714660_ReadsPerGene.out.tab SRR3714663_ReadsPerGene.out.tab SRR3714638_ReadsPerGene.out.tab SRR3714726_ReadsPerGene.out.tab SRR3714666_ReadsPerGene.out.tab SRR3714667_ReadsPerGene.out.tab SRR3714720_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300,304,308,312,316,320,324,328,332,336,340,344,348,352,356,360,364,368,372,376,380,384,388,392,396,400,404,408,412,416 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-UC_vs_Control.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-UC_vs_Control.txt", header=F, row.names=1)
+colnames(x)<-c("Control.1","Control.2","Control.3","Control.4","Control.5","Control.6","Control.7","Control.8","Control.9","Control.10","Control.11","Control.12","Control.13","Control.14","Control.15","Control.16","Control.17","Control.18","Control.19","Control.20","Control.21","Control.22","Control.23","Control.24","Control.25","Control.26","Control.27","Control.28","Control.29","Control.30","Control.31","Control.32","Control.33","Control.34","Control.35","Control.36","Control.37","Control.38","Control.39","Control.40","Control.41","Control.42","Control.43","Control.44","Control.45","Control.46","Control.47","Control.48","Control.49","Control.50","Control.51","Control.52","Control.53","Control.54","Control.55","Control.56","Control.57","Control.58","Control.59","Control.60","Control.61","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10","UC.11","UC.12","UC.13","UC.14","UC.15","UC.16","UC.17","UC.18","UC.19","UC.20","UC.21","UC.22","UC.23","UC.24","UC.25","UC.26","UC.27","UC.28","UC.29","UC.30","UC.31","UC.32","UC.33","UC.34")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE83687-bowel_resection-Stranded-UC_vs_Control-CPM.txt", sep="\t")
+
+# Calculating RPKM
+# https://research.stowers.org/cws/CompGenomics/Projects/edgeR.html
+
+# give the gene lengths
+gtf_file <- "/references/Human/GRCh38.107/Homo_sapiens.GRCh38.107.gtf"
+txdb <- makeTxDbFromGFF(file=gtf_file)
+tx_by_gene <- transcriptsBy(txdb, 'gene')
+geneLengths <- sum(width(reduce(tx_by_gene)))
+
+# using our DGE list object from above
+iv <- match(rownames(x), names(geneLengths))
+
+fpkm <- rpkm(x, geneLengths[iv])
+
+# Write out the RPKM values for each gene into a table
+write.table(fpkm, "GSE83687-bowel_resection-Stranded-UC_vs_Control-RPKM.txt", sep="\t")
+
+# Calculate TPM from RPKM
+# http://luisvalesilva.com/datasimple/rna-seq_units.html
+tpm_from_rpkm <- function(x){
+	rpkm.sum <-colSums(x)
+	return(t(t(x) / (1e-06 * rpkm.sum)))
+}
+
+tpm <- tpm_from_rpkm(fpkm)
+
+# Write out the TPM values for each gene into a table
+write.table(tpm, "GSE83687-bowel_resection-Stranded-UC_vs_Control-TPM.txt", sep="\t")
+
+
+# Calculate differentially expressed genes
+design<-model.matrix(~0+group)
+y <- estimateGLMCommonDisp(y,design)
+y <- estimateGLMTrendedDisp(y,design)
+y <- estimateGLMTagwiseDisp(y,design)
+fit<-glmFit(y,design)
+lrt.2vs1 <- glmLRT(fit, contrast=c(-1,1))
+
+# To get out FDR
+out <- topTags(lrt.2vs1, n = "Inf")$table
+
+# Write out the results
+write.table(out, "GSE83687-bowel_resection-Stranded-UC_vs_Control-Ratio.txt", sep="\t")
+
+q()
+
+
+
+### UC_Crohn ###
+# Generate a gene matrix
+# Stranded
+paste SRR3714700_ReadsPerGene.out.tab SRR3714643_ReadsPerGene.out.tab SRR3714659_ReadsPerGene.out.tab SRR3714684_ReadsPerGene.out.tab SRR3714685_ReadsPerGene.out.tab SRR3714689_ReadsPerGene.out.tab SRR3714702_ReadsPerGene.out.tab SRR3714705_ReadsPerGene.out.tab SRR3714710_ReadsPerGene.out.tab SRR3714715_ReadsPerGene.out.tab SRR3714716_ReadsPerGene.out.tab SRR3714719_ReadsPerGene.out.tab SRR3714731_ReadsPerGene.out.tab SRR3714734_ReadsPerGene.out.tab SRR3714744_ReadsPerGene.out.tab SRR3714747_ReadsPerGene.out.tab SRR3714749_ReadsPerGene.out.tab SRR3714750_ReadsPerGene.out.tab SRR3714751_ReadsPerGene.out.tab SRR3714756_ReadsPerGene.out.tab SRR3714635_ReadsPerGene.out.tab SRR3714641_ReadsPerGene.out.tab SRR3714692_ReadsPerGene.out.tab SRR3714714_ReadsPerGene.out.tab SRR3714729_ReadsPerGene.out.tab SRR3714732_ReadsPerGene.out.tab SRR3714736_ReadsPerGene.out.tab SRR3714764_ReadsPerGene.out.tab SRR3714654_ReadsPerGene.out.tab SRR3714690_ReadsPerGene.out.tab SRR3714644_ReadsPerGene.out.tab SRR3714765_ReadsPerGene.out.tab SRR3714636_ReadsPerGene.out.tab SRR3714639_ReadsPerGene.out.tab SRR3714662_ReadsPerGene.out.tab SRR3714675_ReadsPerGene.out.tab SRR3714686_ReadsPerGene.out.tab SRR3714707_ReadsPerGene.out.tab SRR3714713_ReadsPerGene.out.tab SRR3714721_ReadsPerGene.out.tab SRR3714723_ReadsPerGene.out.tab SRR3714746_ReadsPerGene.out.tab SRR3714755_ReadsPerGene.out.tab SRR3714763_ReadsPerGene.out.tab SRR3714634_ReadsPerGene.out.tab SRR3714637_ReadsPerGene.out.tab SRR3714649_ReadsPerGene.out.tab SRR3714650_ReadsPerGene.out.tab SRR3714661_ReadsPerGene.out.tab SRR3714676_ReadsPerGene.out.tab SRR3714697_ReadsPerGene.out.tab SRR3714698_ReadsPerGene.out.tab SRR3714708_ReadsPerGene.out.tab SRR3714709_ReadsPerGene.out.tab SRR3714712_ReadsPerGene.out.tab SRR3714717_ReadsPerGene.out.tab SRR3714718_ReadsPerGene.out.tab SRR3714724_ReadsPerGene.out.tab SRR3714727_ReadsPerGene.out.tab SRR3714735_ReadsPerGene.out.tab SRR3714737_ReadsPerGene.out.tab SRR3714740_ReadsPerGene.out.tab SRR3714748_ReadsPerGene.out.tab SRR3714753_ReadsPerGene.out.tab SRR3714757_ReadsPerGene.out.tab SRR3714761_ReadsPerGene.out.tab SRR3714632_ReadsPerGene.out.tab SRR3714674_ReadsPerGene.out.tab SRR3714725_ReadsPerGene.out.tab SRR3714651_ReadsPerGene.out.tab SRR3714660_ReadsPerGene.out.tab SRR3714663_ReadsPerGene.out.tab SRR3714638_ReadsPerGene.out.tab SRR3714726_ReadsPerGene.out.tab SRR3714666_ReadsPerGene.out.tab SRR3714667_ReadsPerGene.out.tab SRR3714720_ReadsPerGene.out.tab | cut -f1,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,256,260,264,268,272,276,280,284,288,292,296,300,304,308 | tail -n +5 > tmpfile
+
+cat tmpfile | sed "s/^gene://" >gene_count_stranded-UC_vs_Crohn.txt
+
+
+# Run edgeR on R to derive differentially expressed genes
+library (edgeR)
+library(GenomicFeatures)
+
+x <- read.delim("gene_count_stranded-UC_vs_Crohn.txt", header=F, row.names=1)
+colnames(x)<-c("Crohn.1","Crohn.2","Crohn.3","Crohn.4","Crohn.5","Crohn.6","Crohn.7","Crohn.8","Crohn.9","Crohn.10","Crohn.11","Crohn.12","Crohn.13","Crohn.14","Crohn.15","Crohn.16","Crohn.17","Crohn.18","Crohn.19","Crohn.20","Crohn.21","Crohn.22","Crohn.23","Crohn.24","Crohn.25","Crohn.26","Crohn.27","Crohn.28","Crohn.29","Crohn.30","Crohn.31","Crohn.32","Crohn.33","Crohn.34","Crohn.35","Crohn.36","Crohn.37","Crohn.38","Crohn.39","Crohn.40","Crohn.41","Crohn.42","Crohn.43","UC.1","UC.2","UC.3","UC.4","UC.5","UC.6","UC.7","UC.8","UC.9","UC.10","UC.11","UC.12","UC.13","UC.14","UC.15","UC.16","UC.17","UC.18","UC.19","UC.20","UC.21","UC.22","UC.23","UC.24","UC.25","UC.26","UC.27","UC.28","UC.29","UC.30","UC.31","UC.32","UC.33","UC.34")
+group <- factor(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2))
+y <- DGEList(counts=x,group=group)
+y <- calcNormFactors(y)
+
+# Calculate CPM (counts per million) values
+d <-cpm(y)
+
+# Write out the CPM values for each gene into a table
+write.table(d, "GSE83687-bowel_resection-Stranded-UC_vs_Crohn-CPM.txt", sep="\t")

@@ -1,11 +1,16 @@
 box::use(
   shiny[navbarPage, tabPanel, moduleServer, NS, 
-        renderText, tags, textOutput, tagList,HTML],
+        renderText, tags, textOutput, tagList, HTML],
   shinythemes[shinytheme]
   )
 
 box::use(
   app/view/a_home,
+  app/view/b_explore,
+  app/view/c_download,
+  app/view/d_documentation,
+  
+  app/logic/main_utils[footerHTML],
 )
 
 #-------------------
@@ -22,31 +27,15 @@ tagList(
 navbarPage(
   theme = shinytheme("yeti"),
   "IBDB",
-  tabPanel ("home", a_home$ui(ns("home"))),
-  tabPanel ("Explore"),
-  tabPanel ("Download"),
-  tabPanel ("Documentation")
+  tabPanel ("Home", a_home$ui(ns("home"))),
+  tabPanel ("Explore", b_explore$ui(ns("explore"))),
+  tabPanel ("Download",c_download$ui(ns("download"))),
+  tabPanel ("Documentation",d_documentation$ui(ns("documentation")))
   ),
 
 tags$footer(HTML(footerHTML()))
 
   )
-}
-
-footerHTML <- function() {
-  "
-    <footer class='footer'>
-      <div style='position: fixed;
-      bottom: 0;width: 100%;height:60px'>
-      <div class='footer-copyright text-center py-3'><span style='color:black'>LiverDB © 2022 Copyright:</span>
-        <a href='http://heartlncrna.github.io/' target='_blank'>heartlncrna</a> 
-        <span>&nbsp</span>
-        <a href='https://github.com/RVel37/IBDB' target='_blank'> 
-          <img src='GitHub-Mark-Light-64px.png' height='20'>
-        </a>
-      </div>
-    </footer>
-  "
 }
 
 

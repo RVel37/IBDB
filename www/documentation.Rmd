@@ -18,7 +18,7 @@ params:
 ```{r setup, echo=FALSE, include=FALSE}
 library(tidyverse)
 library(shiny)
-source("../utils.R")
+source("app/logic/d_documentation_utils.R")
 ```
 
 ![](logo.png){align="right" style="border: none; float: right;" width="360"}
