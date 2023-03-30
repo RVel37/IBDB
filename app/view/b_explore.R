@@ -47,7 +47,7 @@ server <- function(id) {
   moduleServer(id, function(input, output, session) {
   
     output$table1 <- renderTable({
-     table1
+     #table
     })
 
   })  
