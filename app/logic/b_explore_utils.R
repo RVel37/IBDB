@@ -2,7 +2,8 @@ box::use(
   shiny[fluidPage,fluidRow,column]
 )
 
-#'@export
+
+
 ExplorePageContents <- function(deg_contrasts) {
   fluidPage(
     title = "Explore",

@@ -43,8 +43,8 @@ rpkm_to_tpm <- function(x) {
 unique_studies <- metadata %>% distinct(study_id) %>% pull()
 
 
-
 for (study_id in unique_studies) {
+  
 exp_filename <- paste0(study_id, exp_outfile_suffix)
 deg_filename <- paste0(study_id, deg_outfile_suffix)
 
@@ -60,15 +60,14 @@ mat <- lapply(samples, function(id) {
            skip = 4, 
            col_names = c("gene_id", "unstranded", "forward", "reverse")
   ) %>%
-    select(gene_id, contains(!!strand)) %>%
+    dplyr::select(gene_id, contains(!!strand)) %>%
     rename(counts = contains(!!strand)) %>%
     mutate(sample_id = id)
 }) %>%
   bind_rows() %>%
   pivot_wider(names_from = sample_id, values_from = counts) %>%
   column_to_rownames("gene_id") %>%
-  as.matrix() %>% na.omit() #works after na.omit which removes some ENS IDs
-
+  as.matrix() %>% drop_na()
 
 # Compute CPM, RPKM, TPM
 cpms <- mat %>%
@@ -101,6 +100,7 @@ cpms %>%
 rm(cpms, rpkms, rpkms_mat, tpms)
 gc()
 
+}
 
 
 # DEG files ------------------------------------------------------------
@@ -156,4 +156,62 @@ gc()
 
 
 }
+
+
+
+
+#-------------------------------------------------------------------------------
+# enrichr res
+#-------------------------------------------------------------------------------
+
+study_ids <- metadata %>% 
+  pull(study_id) %>% 
+  unique()
+names(study_ids) <- study_ids
+
+# Get gene symbols from BioMart
+ens2sym <- getBM(
+  attributes = c("ensembl_gene_id","hgnc_symbol"),
+  mart = useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+) %>% 
+  filter(hgnc_symbol != "") %>%
+  rename(gene_id = ensembl_gene_id, gene_name = hgnc_symbol)
+
+
+# Get DEG tables with gene symbols, and filter and label sig DEGs
+degs <- lapply(study_ids, function(study){
+  filename <- file.path(subdir,paste0(study, deg_outfile_suffix))
+  read_csv(filename) %>% 
+    inner_join(ens2sym, by = c("gene_id")) %>% 
+    mutate(study_id = study)
+}) %>% 
+  bind_rows() %>% 
+  filter(!is.na(FDR) & FDR < .01 & abs(logFC) > 1) %>%
+  unite("group", c("study_id", "numerator", "denominator"))
+
+
+
+
+
+
+
+
+#----------------------------
+# RSQLite (on-disk DB)
+#----------------------------
+
+# store permanently on disk
+conn <- dbConnect(RSQLite::SQLite(), "appdata.sqlite")
+
+# write data to table
+RSQLite::dbWriteTable(conn, "App_data", app_data)
+
+for (name in names(app_data)){
+  table_name <- paste0("tbl_", name)
+  dbWriteTable(conn, table_name, app_data[[name]])
+}
+
+dbListTables(conn) # check what tables exist in db
+dbReadTable(conn, "App_data") # see table contents
+dbRollback(conn) # restore previous version of a db
 

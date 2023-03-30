@@ -1,5 +1,6 @@
 box::use(
-  shiny[NS,tabPanel,icon]
+  shiny[NS,tabPanel,icon,fluidPage,fluidRow,column,selectInput,tableOutput,
+        moduleServer,renderTable]
 )
 
 box::use(
@@ -10,11 +11,31 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   
-  tabPanel(
+tabPanel(
     title = "Explore",
     id = "explore-tab",
-    icon = icon('table'),
-    ExplorePageContents(deg_contrasts) #ExplorePageContents(results)
+    icon = icon('table'))
+  
+fluidPage(
+  fluidRow(
+    column(width = 4),
+    selectInput("dropdown1","Study",
+                choices = c("GSE112057","GSE123141","GSE83687"),
+    tableOutput("table1")),
+    
+    
+    column(width = 8)
   )
+)
 }
 
+#'@export
+server <- function(id) {
+  moduleServer(id, function(input, output, session) {
+  
+    output$table <- renderTable({
+      #blank table
+    })
+    
+  })  
+}
