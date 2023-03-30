@@ -3,7 +3,6 @@ box::use(
 )
 
 
-
 ExplorePageContents <- function(deg_contrasts) {
   fluidPage(
     title = "Explore",

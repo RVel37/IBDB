@@ -1,6 +1,6 @@
 box::use(
-  shiny[NS,tabPanel,icon,fluidPage,fluidRow,column,selectInput,tableOutput,
-        moduleServer,renderTable]
+  shiny[NS,tabPanel,icon,fluidPage,fluidRow,column,selectInput,dataTableOutput,
+        moduleServer,renderTable,h2,h3,hr,p]
 )
 
 box::use(
@@ -11,31 +11,45 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   
-tabPanel(
+  tabPanel(
     title = "Explore",
     id = "explore-tab",
-    icon = icon('table'))
-  
-fluidPage(
-  fluidRow(
-    column(width = 4),
-    selectInput("dropdown1","Study",
-                choices = c("GSE112057","GSE123141","GSE83687"),
-    tableOutput("table1")),
+    icon = icon('table'),
     
-    
-    column(width = 8)
-  )
-)
+    column(4,
+           
+           fluidRow( h2("Explore results"),hr(),
+             column(6,
+                   #GSE drop down
+                   (selectInput("dropdown1","Study",
+                                choices = c("GSE112057","GSE123141","GSE83687"))),
+                   p("view study [link] on GEO."),
+                    ),
+             column(6, 
+                   #contrasts drop down
+                   (selectInput("dropdown2","Contrast (Numerator vs. Denominator)",
+                                choices = c("Control","Etc")))
+                    ), hr(), h3("Results Table")
+             
+      )
+    ), #end of left column here
+  column(8,
+         
+      p("ExplorePageContents function will go here -- needs deg_contrasts data")   
+         
+      ) #end of right column here
+  ) 
 }
+
 
 #'@export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
   
-    output$table <- renderTable({
-      #blank table
+    output$table1 <- renderTable({
+     table1
     })
-    
+
   })  
 }
+

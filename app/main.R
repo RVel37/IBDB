@@ -46,6 +46,7 @@ tags$footer(HTML(footerHTML()))
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    output$message <- renderText("Hello!")
+    b_explore$server("explore")
+    
   })
 }
