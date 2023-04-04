@@ -1,6 +1,6 @@
 box::use(
   shiny[navbarPage, tabPanel, moduleServer, NS, 
-        renderText, tags, textOutput, tagList, HTML],
+        renderText, tags, textOutput, tagList, HTML,icon],
   shinythemes[shinytheme]
   )
 
@@ -27,10 +27,10 @@ tagList(
 navbarPage(
   theme = shinytheme("yeti"),
   "IBDB",
-  tabPanel ("Home", a_home$ui(ns("home"))),
-  tabPanel ("Explore", b_explore$ui(ns("explore"))),
-  tabPanel ("Download",c_download$ui(ns("download"))),
-  tabPanel ("Documentation",d_documentation$ui(ns("documentation")))
+  tabPanel ("Home", icon = icon("home"), a_home$ui(ns("home"))),
+  tabPanel ("Explore", icon = icon('table'), b_explore$ui(ns("explore"))),
+  tabPanel ("Download", icon = icon('download'), c_download$ui(ns("download"))),
+  tabPanel ("Documentation",icon = icon('file-alt'),d_documentation$ui(ns("documentation")))
   ),
 
 tags$footer(HTML(footerHTML()))

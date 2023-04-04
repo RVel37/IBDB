@@ -1,5 +1,6 @@
 box::use(
-  shiny[fluidPage,fluidRow,column]
+  shiny[fluidPage,fluidRow,column],
+  shinipsum[...]
 )
 
 
