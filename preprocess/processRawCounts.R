@@ -39,17 +39,15 @@ rpkm_to_tpm <- function(x){
   return(t(t(x) / (1e-06 * rpkm.sum)))
 }
 
-
 #-------------------------------------------------------------------------------
 # process raw counts
 #-------------------------------------------------------------------------------
-
 
 metadata <- read_csv(METADATA_CSV)
 all_contrasts <- read_csv(CONTRASTS_CSV)
 
 # Get gene lengths
-txdb <- GenomicFeatures::makeTxDbFromGFF(file = GTF_FILE)
+txdb <- GenomicFeatures::makeTxDbFromGFF()
 gene_lengths <- GenomicFeatures::transcriptsBy(txdb, "gene") %>%
   GenomicRanges::reduce() %>%
   GenomicRanges::width() %>%
@@ -73,14 +71,17 @@ for (study_id in unique_studies) {
              skip = COUNTS_SKIP_LINES, 
              col_names = c("gene_id", "unstranded", "forward", "reverse")
     ) %>%
-      select(gene_id, contains(!!strand)) %>%
+      dplyr::select(gene_id, contains(!!strand)) %>%
       rename(counts = contains(!!strand)) %>%
       mutate(sample_id = id)
   }) %>%
     bind_rows() %>%
     pivot_wider(names_from = sample_id, values_from = counts) %>%
     column_to_rownames("gene_id") %>%
-    as.matrix() %>% na.omit()
+    as.matrix() 
+  #---------------------------------
+  #removed NA values relative to original script
+  #---------------------------------
   
   # Compute CPM, RPKM, TPM
   cpms <- mat %>%
@@ -167,96 +168,4 @@ for (study_id in unique_studies) {
   
 }
 
-
-
-#-------------------------------------------------------------------------------
-# enrichr res
-#-------------------------------------------------------------------------------
-
-enrichr_filename <- "enrichr_res.csv.gz"
-deg_dir <- "preprocess/refs"
-
-study_ids <- read_csv(METADATA_CSV) %>% 
-  pull(study_id) %>% 
-  unique()
-names(study_ids) <- study_ids
-
-
-# Get gene symbols from BioMart
-ens2sym <- getBM(
-  attributes = c("ensembl_gene_id","hgnc_symbol"),
-  mart = useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
-) %>% 
-  filter(hgnc_symbol != "") %>%
-  rename(gene_id = ensembl_gene_id, gene_name = hgnc_symbol)
-
-# Get DEG tables with gene symbols, and filter and label sig DEGs
-degs <- lapply(study_ids, function(study){
-  filename <- file.path(deg_dir, paste0(study, DEG_OUTFILE_SUFFIX))
-  read_csv(filename) %>% 
-    inner_join(ens2sym, by = c("gene_id")) %>% 
-    mutate(study_id = study)
-}) %>% 
-  bind_rows() %>% 
-  filter(!is.na(FDR) & FDR < .01 & abs(logFC) > 1) %>%
-  unite("group", c("study_id", "numerator", "denominator"))
-
-# Get unique groups of enrichr runs
-unique_groups <- degs %>%
-  pull(group) %>%
-  unique()
-names(unique_groups) <- unique_groups
-
-# Send genes to enrichr
-eres <- lapply(unique_groups, function(x) {
-  up_genes <- degs %>% 
-    filter(group == x & logFC > 1) %>% 
-    pull(gene_name)
-  dn_genes <- degs %>% 
-    filter(group == x & logFC < -1) %>% 
-    pull(gene_name)
-  
-  resup <- enrichr(up_genes, databases = "KEGG_2019_Human") %>%
-    pluck("KEGG_2019_Human") %>%
-    mutate(group = "Over-expressed")
-  resdn <- enrichr(dn_genes, databases = "KEGG_2019_Human") %>%
-    pluck("KEGG_2019_Human") %>%
-    mutate(group = "Under-expressed")
-  
-  bind_rows(resup, resdn)
-})
-
-lapply(as.list(names(eres)), function(x) {
-  eres[[x]] %>% 
-    mutate(Study_Contrast = x) %>% 
-    relocate(Study_Contrast)
-}) %>% 
-  bind_rows() %>% 
-  write_csv(enrichr_filename)
-  
-subdir <- paste0("preprocess/refs")
-file.rename(enrichr_filename,file.path(subdir, enrichr_filename)) 
-
-
-
-
-
-#----------------------------
-# RSQLite (on-disk DB)
-#----------------------------
-
-# store permanently on disk
-conn <- dbConnect(RSQLite::SQLite(), "appdata.sqlite")
-
-# write data to table
-RSQLite::dbWriteTable(conn, "App_data", app_data)
-
-for (name in names(app_data)){
-  table_name <- paste0("tbl_", name)
-  dbWriteTable(conn, table_name, app_data[[name]])
-}
-
-dbListTables(conn) # check what tables exist in db
-dbReadTable(conn, "App_data") # see table contents
-dbRollback(conn) # restore previous version of a db
 

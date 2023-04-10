@@ -11,6 +11,7 @@ box::use(
   app/view/d_documentation,
   
   app/logic/main_utils[footerHTML],
+  app/logic/b_explore_utils,
 )
 
 #-------------------

@@ -13,7 +13,7 @@ ui <- function(id) {
 tabPanel(
   title = "Download",
   id = "download-tab",
-  icon = icon('download'),
+  
   DownloadPageContents()
   )
 }

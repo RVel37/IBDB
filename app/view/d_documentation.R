@@ -9,7 +9,7 @@ ui <- function(id) {
   tabPanel(
     title = "Documentation",
     id = "docs-tab",
-    icon = icon('file-alt'),
+   
     tags$iframe(
       src = './documentation.html',
       width = '100%', height = '800px',

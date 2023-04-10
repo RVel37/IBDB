@@ -11,7 +11,7 @@ ui <- function(id) {
   title = "Home",
   id = "home-tab",
   value = "aboutTab",
-  icon = icon("home"),
+  
   fluidPage(br(), includeHTML("www/home.html"))
   )
 }
