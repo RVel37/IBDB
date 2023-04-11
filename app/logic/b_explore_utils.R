@@ -2,7 +2,7 @@ box::use(
   shiny[fluidPage,fluidRow,column,tagList,h3,hr,selectInput,...],
   shinycssloaders[withSpinner],
   DT[DTOutput],
-  shinipsum, echarts4r,
+  shinipsum[...], 
 )
 
 ###LHS - contrasts table

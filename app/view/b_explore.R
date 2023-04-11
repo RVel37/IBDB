@@ -5,7 +5,7 @@ box::use(
     renderUI],
   DT[renderDT],
   dplyr[filter],
-  shinipsum,
+  shinipsum[...], 
 )
 
 box::use(
