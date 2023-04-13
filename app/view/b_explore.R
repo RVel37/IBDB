@@ -1,15 +1,9 @@
 box::use(
-  shiny[
-    NS, tabPanel, icon, fluidPage, fluidRow, column, selectInput, dataTableOutput,
-    moduleServer, renderTable, h2, h3, hr, p, renderPlot,reactive,renderDataTable,
-    renderUI],
-  DT[renderDT],
+  shiny[...],
+  DT[renderDT,DTOutput],
   dplyr[filter],
-  shinipsum[...], 
-)
-
-box::use(
-  app/logic/b_explore_utils[GeneTable_panel, OutputPanel_tabset]
+  shinycssloaders[withSpinner],
+  shinipsum[...],
 )
 
 
@@ -20,17 +14,106 @@ ui <- function(id) {
 tabPanel(
     title = "Explore",
     id = "explore-tab",
-   
+
     fluidPage(
       title = "Explore",
       fluidRow(
         column(
           width = 4,
-          GeneTable_panel(),
+          #GeneTable_panel
+          tagList(
+            fluidRow(
+              column(width = 12,
+                     h3("Explore Results"),
+                     hr())
+            ),
+            fluidRow(
+              column(
+                6,
+                # GSE drop-down
+                selectInput(
+                  inputId = "selectStudy",
+                  label = "Study",
+                  selected = "GSE1",
+                  choices = c("GSE1", "GSE2")),
+
+                p("view study [link] on GEO."),
+              ),  # uiOutput("studyLink") ### study link ###
+
+              # contrasts drop-down
+              column(
+                width = 6,
+                uiOutput("UIselectContrast")
+              )
+            ),
+            hr(),
+
+            fluidRow(
+              column(
+                width = 12,
+                h3("Results Table"),
+                p("IBD RNA-Seq DGE analysis results."),
+
+                withSpinner(DTOutput("degTable")) #contrasts table
+              )
+            )
+          )
+
+          #end of GeneTable_panel
         ),
         column(
           width = 8,
-          OutputPanel_tabset(),
+          #outputpanel_tabset
+          column(
+            width = 12,
+            tabsetPanel(
+              id = "expTabset",
+              tabPanel(
+                title = "Expression",
+                icon=icon('chart-bar'),
+
+                #expression_panel()
+
+              ),
+              tabPanel(
+                title = "Volcano plot",
+                icon=icon('mountain'),
+                fluidRow(
+                  column(
+                    width = 6,
+                    hr(),
+                    h4("Volcano plot"),
+                    hr(),
+                  )
+                ),
+                fluidRow(
+                  column(
+                    width = 12,
+                    plotOutput("volcano_plot", height = "600px"),
+                  )
+                )
+              ),
+              tabPanel(
+                title = "Heatmap",
+                icon=icon("burn"),
+                #Heatmap_panel()
+
+              ),
+              tabPanel(
+                title = "Pathway analysis",
+                icon=icon("project-diagram"),
+                #Enrich_panel()
+
+              ),
+              tabPanel(
+                title = "Comparison",
+                icon=icon("adjust"),
+                #Upset_panel()
+
+              )
+            )
+          )
+          #end of outputpanel_tabset
         )
       )
     ))
@@ -40,7 +123,7 @@ tabPanel(
 #'@export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    
+
 print("explore module server works")
 
 
@@ -48,10 +131,10 @@ print("explore module server works")
     output$UIselectContrast <- renderUI({
       study <- input$selectStudy
       cont_labels <- deg_contrasts %>%
-        dplyr::filter(study_id == study) %>% 
-        unite("contrast", c("numerator", "denominator"), sep = " vs. ") %>% 
+        dplyr::filter(study_id == study) %>%
+        unite("contrast", c("numerator", "denominator"), sep = " vs. ") %>%
         pull(contrast)
-      
+
       selectInput(
         inputId = "selectContrast",
         label = "Contrast (Numerator vs. Denominator)",

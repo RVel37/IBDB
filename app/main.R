@@ -1,5 +1,5 @@
 box::use(
-  shiny[navbarPage, tabPanel, moduleServer, NS, 
+  shiny[navbarPage, tabPanel, moduleServer, NS,
         renderText, tags, textOutput, tagList, HTML,icon],
   shinythemes[shinytheme]
   )
@@ -9,9 +9,8 @@ box::use(
   app/view/b_explore,
   app/view/c_download,
   app/view/d_documentation,
-  
+
   app/logic/main_utils[footerHTML],
-  app/logic/b_explore_utils,
 )
 
 #-------------------
@@ -24,7 +23,7 @@ ui <- function(id) {
   ns <- NS(id)
 
 tagList(
-  
+
 navbarPage(
   theme = shinytheme("yeti"),
   "IBDB",
@@ -48,6 +47,6 @@ tags$footer(HTML(footerHTML()))
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     b_explore$server("explore")
-    
+
   })
 }
