@@ -58,12 +58,14 @@ eres <- lapply(unique_groups, function(x) {
   resup <- enrichr(up_genes, databases = "KEGG_2019_Human") %>%
     pluck("KEGG_2019_Human") %>%
     mutate(group = "Over-expressed",
-           P.value = as.double(P.value)) %>%
+           P.value = as.double(P.value),
+           Adjusted.P.value = as.double(Adjusted.P.value)) %>%
     mutate_if(is.logical, as.character)
   resdn <- enrichr(dn_genes, databases = "KEGG_2019_Human") %>%
     pluck("KEGG_2019_Human") %>%
     mutate(group = "Under-expressed",
-           P.value = as.double(P.value)) %>%
+           P.value = as.double(P.value),
+           Adjusted.P.value = as.double(Adjusted.P.value)) %>%
     mutate_if(is.logical, as.character)
 
   bind_rows(resup, resdn)

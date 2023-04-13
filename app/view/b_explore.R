@@ -58,7 +58,6 @@ tabPanel(
               )
             )
           )
-
           #end of GeneTable_panel
         ),
         column(
@@ -93,24 +92,7 @@ tabPanel(
                   )
                 )
               ),
-              tabPanel(
-                title = "Heatmap",
-                icon=icon("burn"),
-                #Heatmap_panel()
 
-              ),
-              tabPanel(
-                title = "Pathway analysis",
-                icon=icon("project-diagram"),
-                #Enrich_panel()
-
-              ),
-              tabPanel(
-                title = "Comparison",
-                icon=icon("adjust"),
-                #Upset_panel()
-
-              )
             )
           )
           #end of outputpanel_tabset
