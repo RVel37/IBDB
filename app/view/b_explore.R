@@ -71,8 +71,8 @@ tabPanel(
                 title = "Expression",
                 icon=icon('chart-bar'),
 
-                #expression_panel()
 
+                #expression_panel()
               ),
               tabPanel(
                 title = "Volcano plot",
@@ -89,16 +89,11 @@ tabPanel(
                   column(
                     width = 12,
                     plotOutput("volcano_plot", height = "600px"),
-                  )
-                )
+               ))
               ),
-
-            )
-          )
-          #end of outputpanel_tabset
-        )
-      )
-    ))
+            ))
+        #end of outputpanel_tabset
+  ))))
 }
 
 
@@ -134,5 +129,5 @@ output$volcano_plot <- renderPlot({
   random_ggplot()
 })
 
-    })
+})
 }
