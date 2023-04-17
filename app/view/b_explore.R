@@ -5,13 +5,15 @@ box::use(
   shinycssloaders[withSpinner],
   shinipsum[...],
 )
-
+box::use(
+  app/logic/b_explore_utils[get_random_ggplot],
+)
 
 #'@export
 ui <- function(id) {
   ns <- NS(id)
 
-tabPanel(
+  tabPanel(
     title = "Explore",
     id = "explore-tab",
 
@@ -20,30 +22,35 @@ tabPanel(
       fluidRow(
         column(
           width = 4,
-          #GeneTable_panel
-          tagList(
-            fluidRow(
-              column(width = 12,
-                     h3("Explore Results"),
-                     hr())
+#-------------------------------------------------------
+# LEFT HAND SIDE (gene table panels)
+#-------------------------------------------------------
+    tagList(
+      fluidRow(
+        column(width = 12,
+          h3("Explore Results"),
+          hr())
             ),
             fluidRow(
               column(
                 6,
-                # GSE drop-down
+# GSE drop-down
                 selectInput(
-                  inputId = "selectStudy",
+                  inputId = ns("selectStudy"),
                   label = "Study",
-                  selected = "GSE1",
-                  choices = c("GSE1", "GSE2")),
+                  selected = "line",
+                  choices = c("line", "bin2d", "contour", "density")),
 
-                p("view study [link] on GEO."),
-              ),  # uiOutput("studyLink") ### study link ###
+              ),  #here will go the uioutput (study link)
 
-              # contrasts drop-down
+# study contrasts drop-down
               column(
                 width = 6,
-                uiOutput("UIselectContrast")
+                selectInput(
+                  inputId = ns("selectContrast"),
+                  label = "Contrast",
+                  selected = "Cont1",
+                  choices = c("Cont1", "Cont2")),
               )
             ),
             hr(),
@@ -51,18 +58,20 @@ tabPanel(
             fluidRow(
               column(
                 width = 12,
-                h3("Results Table"),
-                p("IBD RNA-Seq DGE analysis results."),
 
-                withSpinner(DTOutput("degTable")) #contrasts table
+# Results table
+                h3("Results Table"),
+                p("IBD RNA-Seq DEG analysis results."),
+                withSpinner(DTOutput(ns("degTable")))
               )
             )
           )
-          #end of GeneTable_panel
         ),
+#-------------------------------------------------------
+# RIGHT HAND SIDE (output panel tabs)
+#-------------------------------------------------------
         column(
           width = 8,
-          #outputpanel_tabset
           column(
             width = 12,
             tabsetPanel(
@@ -70,64 +79,47 @@ tabPanel(
               tabPanel(
                 title = "Expression",
                 icon=icon('chart-bar'),
-
-
-                #expression_panel()
-              ),
-              tabPanel(
-                title = "Volcano plot",
-                icon=icon('mountain'),
-                fluidRow(
-                  column(
-                    width = 6,
-                    hr(),
-                    h4("Volcano plot"),
-                    hr(),
-                  )
+                selectInput(
+                  inputId = ns("selectNorm"),
+                  label = "Normalization",
+                  selected = "CPM",
+                  choices = c("CPM", "TPM", "RPKM")
                 ),
-                fluidRow(
-                  column(
-                    width = 12,
-                    plotOutput("volcano_plot", height = "600px"),
-               ))
+                uiOutput(ns("html")),
+                plotOutput(ns("expPlot"))
               ),
             ))
-        #end of outputpanel_tabset
-  ))))
+        ))))
 }
 
+#-------------------------------------------------------
+# SERVER
+#-------------------------------------------------------
 
 #'@export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
 
-print("explore module server works")
-
-
-# contrasts selector
-    output$UIselectContrast <- renderUI({
-      study <- input$selectStudy
-      cont_labels <- deg_contrasts %>%
-        dplyr::filter(study_id == study) %>%
-        unite("contrast", c("numerator", "denominator"), sep = " vs. ") %>%
-        pull(contrast)
-
-      selectInput(
-        inputId = "selectContrast",
-        label = "Contrast (Numerator vs. Denominator)",
-        selected = cont_labels[1],
-        choices = cont_labels
-      )
+    # DEG results table
+    output$degTable <- DT::renderDT({
+      random_DT(10,3)
     })
 
-# DEG results table
-output$degTable <- DT::renderDT({
-  random_DT(10,3)
-})
+    output$volcano_plot <- renderPlot({
+      random_ggplot()
+      # create_exp_plot(input$selectStudy, input$selectContrast, input$selectNorm)
+    })
 
-output$volcano_plot <- renderPlot({
-  random_ggplot()
-})
+    output$expPlot <- renderPlot({
+      get_random_ggplot(input$selectStudy)
+    })
 
-})
+    output$html <- renderUI({
+      string <- paste0(
+        input$selectStudy, input$selectContrast, input$selectNorm
+      )
+      string
+    })
+
+  })
 }
