@@ -59,35 +59,88 @@ eres <- lapply(unique_groups, function(x) {
     pluck("KEGG_2019_Human") %>%
     mutate(group = "Over-expressed",
            P.value = as.double(P.value),
-           Adjusted.P.value = as.double(Adjusted.P.value)) %>%
+           Adjusted.P.value = as.double(Adjusted.P.value),
+           Old.P.value = as.integer(Old.P.value),
+           Old.Adjusted.P.value = as.integer(Old.Adjusted.P.value),
+           Odds.Ratio = as.double(Odds.Ratio),
+           Combined.Score = as.character(Combined.Score),
+           Genes = as.character(Genes),
+           group = as.character(group)
+    )%>%
     mutate_if(is.logical, as.character)
+
   resdn <- enrichr(dn_genes, databases = "KEGG_2019_Human") %>%
     pluck("KEGG_2019_Human") %>%
     mutate(group = "Under-expressed",
            P.value = as.double(P.value),
-           Adjusted.P.value = as.double(Adjusted.P.value)) %>%
+           Adjusted.P.value = as.double(Adjusted.P.value),
+           Old.P.value = as.integer(Old.P.value),
+           Old.Adjusted.P.value = as.integer(Old.Adjusted.P.value),
+           Odds.Ratio = as.double(Odds.Ratio),
+           Combined.Score = as.character(Combined.Score),
+           Genes = as.character(Genes),
+           group = as.character(group)
+    )%>%
     mutate_if(is.logical, as.character)
 
   bind_rows(resup, resdn)
 })
 
+########## ERES MODIFIED ############
+eres <- lapply(unique_groups, function(x) {
+  up_genes <- degs %>%
+    filter(group == x & logFC > 1) %>%
+    pull(gene_name)
+  dn_genes <- degs %>%
+    filter(group == x & logFC < -1) %>%
+    pull(gene_name)
 
-#### TEST (it worked) ####
-eres1 <- unique_groups[1]
-up_genes <- degs %>%
-  filter(group == eres1 & logFC > 1) %>%
-  pull(gene_name)
-dn_genes <- degs %>%
-  filter(group == eres1 & logFC < -1) %>%
-  pull(gene_name)
-resup <- enrichr(up_genes, databases = "KEGG_2019_Human") %>%
-  pluck("KEGG_2019_Human") %>%
-  mutate(group = "Over-expressed")
-resdn <- enrichr(dn_genes, databases = "KEGG_2019_Human") %>%
-  pluck("KEGG_2019_Human") %>%
-  mutate(group = "Under-expressed")
-eres2 <- bind_rows(resup, resdn)
+  if (length(up_genes) > 0) {
+    resup <- enrichr(up_genes, databases = "KEGG_2019_Human") %>%
+      pluck("KEGG_2019_Human") %>%
+      mutate(group = "Over-expressed",
+             P.value = as.double(P.value),
+             Adjusted.P.value = as.double(Adjusted.P.value),
+             Old.P.value = as.integer(Old.P.value),
+             Old.Adjusted.P.value = as.integer(Old.Adjusted.P.value),
+             Odds.Ratio = as.double(Odds.Ratio),
+             Combined.Score = as.character(Combined.Score),
+             Genes = as.character(Genes),
+             group = as.character(group)
+      ) %>%
+      mutate_if(is.logical, as.character)
+  } else {
+    resup <- NULL
+  }
 
+  if (length(dn_genes) > 0) {
+    resdn <- enrichr(dn_genes, databases = "KEGG_2019_Human") %>%
+      pluck("KEGG_2019_Human") %>%
+      mutate(group = "Under-expressed",
+             P.value = as.double(P.value),
+             Adjusted.P.value = as.double(Adjusted.P.value),
+             Old.P.value = as.integer(Old.P.value),
+             Old.Adjusted.P.value = as.integer(Old.Adjusted.P.value),
+             Odds.Ratio = as.double(Odds.Ratio),
+             Combined.Score = as.character(Combined.Score),
+             Genes = as.character(Genes),
+             group = as.character(group)
+      ) %>%
+      mutate_if(is.logical, as.character)
+  } else {
+    resdn <- NULL
+  }
+
+  if (length(resup) > 0 & length(resdn) > 0) {
+    bind_rows(resup, resdn)
+  } else if (length(resup) > 0) {
+    resup
+  } else if (length(resdn) > 0) {
+    resdn
+  } else {
+    NULL
+  }
+})
 
 lapply(as.list(names(eres)), function(x) {
   eres[[x]] %>%

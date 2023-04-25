@@ -88,10 +88,10 @@ ui <- function(id) {
                   selected = "CPM",
                   choices = c("CPM", "TPM", "RPKM")
                 ),
-                makeHeaders(ns(
+                makeHeaders(
                   title = "Gene counts ",
                   message=paste0("Gene count plots for samples in the selected study.")
-                )),
+                ),
                 hr(),
                 uiOutput(ns("expHtml")),
                 plotOutput(ns("expPlot"))
