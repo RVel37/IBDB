@@ -1,18 +1,25 @@
 
 enrichr_path <- "enrichr_res.csv.gz"
-
 en_df <- read_csv(enrichr_path)
 
-#write table with enrichr results
+contrasts_path <-"contrasts.csv"
+cont_df <- read_csv(contrasts_path)
+metadata_path <-"metadata.csv"
+met_df <- read_csv(metadata_path)
+
+#write tables
 DBI::dbWriteTable(conn, "enrichr", en_df)
+DBI::dbWriteTable(conn, "contrasts",cont_df)
+DBI::dbWriteTable(conn, "metadata", met_df)
 
 gse_list <- c("GSE112057", "GSE123141", "GSE83687")
 
-CPM <- "CPM"
+#----------- test variables (to be deleted)
+normalization <- "CPM"
 gene_name <- "MT-RNR1"
 
 #-------------------------------------------------
-
+get_exp_plot_data <- function(gene_name, normalization) {
 # EXPRESSION PLOT
 conn <- DBI::dbConnect(RSQLite::SQLite(), "data.sqlite") #open conn
 
@@ -27,7 +34,7 @@ ens_id <- ens2sym %>%
 ###### find correct GSE + correct normalization
 
 #filter tables for normalization
-suffix <- switch(CPM, #normalization,
+suffix <- switch(normalization,
                  CPM = "_cpm",
                  TPM = "_tpm",
                  RPKM = "_rpkm")
@@ -40,30 +47,15 @@ for (gse in gse_list) {
   }
 }
 
-###### find gene in in enrichr
-enrichr <- tbl(conn,"enrichr") %>% collect()
+# add conditions (from metadata table)
+metadata <- dplyr::tbl(conn,"metadata") %>% collect
 
-contrasts <- enrichr %>%
-  filter(Genes == gene_name) %>%
-  pull(Study_Contrast) #--------------------- needs work
+longExpDf <- expDf %>% pivot_longer(cols = -gene_id, names_to="sample_id", values_to="expression") %>%
+  collect()
 
-df <-
-
+longExpDf <- left_join(longExpDf,metadata, by = "sample_id")
 
 return(expDf)
 DBI::dbDisconnect(conn)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
