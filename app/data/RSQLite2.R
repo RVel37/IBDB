@@ -8,38 +8,62 @@ DBI::dbWriteTable(conn, "enrichr", en_df)
 
 gse_list <- c("GSE112057", "GSE123141", "GSE83687")
 
+CPM <- "CPM"
+gene_name <- "MT-RNR1"
+
+#-------------------------------------------------
 
 # EXPRESSION PLOT
-get_exp_data <- function(gene_name, normalization) {
-  conn <- DBI::dbConnect(RSQLite::SQLite(), "data.sqlite") #open conn
+conn <- DBI::dbConnect(RSQLite::SQLite(), "data.sqlite") #open conn
 
-  df <- data.frame()
+# use ens2sym to match inputted gene with ENSEMBL ID
+ens2sym <- dplyr::tbl(conn, "ens2sym")
 
-  #get correct table depending on normalization
-  suffix <- switch(normalization,
-                   CPM = "_cpm",
-                   TPM = "_tpm",
-                   RPKM = "_rpkm")
+ens_id <- ens2sym %>%
+  filter(gene_name == !!gene_name) %>%
+  select(gene_id) %>%
+  pull()
 
- for (gse in gse_list) {
-    expTable <- paste0(gse, suffix) #loop through GSEs to find gene
-    if (gene_name %in% dplyr::tbl(conn,expTable) %>%
-        distinct(gene_id) %>% pull()) {
+###### find correct GSE + correct normalization
 
-      df <- dplyr::bind_rows(df, dplyr::tbl(conn,expTable) %>%
-        filter(gene_id == gene_name) %>%
-        collect())
-    }
- }
+#filter tables for normalization
+suffix <- switch(CPM, #normalization,
+                 CPM = "_cpm",
+                 TPM = "_tpm",
+                 RPKM = "_rpkm")
 
-  enrichr <- dplyr::tbl(conn, "enrichr") %>%
-    filter(Genes == gene_name) %>%
-    select(Study_Contrast) %>%
-    collect()
+for (gse in gse_list) {
+  expTable <- dplyr::tbl(conn, paste0(gse, suffix)) %>% collect() #loop through GSEs
 
-  dplyr::bind_rows(df, enrichr)
-
-  return(df)
-  DBI::dbDisconnect(conn) #close conn
+  if (ens_id %in% expTable$gene_id) {
+    expDf <- (expTable %>% filter (gene_id == ens_id))
+  }
 }
+
+###### find gene in in enrichr
+enrichr <- tbl(conn,"enrichr") %>% collect()
+
+contrasts <- enrichr %>%
+  filter(Genes == gene_name) %>%
+  pull(Study_Contrast) #--------------------- needs work
+
+df <-
+
+
+return(expDf)
+DBI::dbDisconnect(conn)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
