@@ -5,13 +5,13 @@ box::use(
 #'@export
 ui <- function(id) {
   ns <- NS(id)
-  
+
   tabPanel(
     title = "Documentation",
     id = "docs-tab",
-   
+
     tags$iframe(
-      src = './documentation.html',
+      src = './www/documentation.html',
       width = '100%', height = '800px',
       frameborder = 0,
       scrolling = 'auto'

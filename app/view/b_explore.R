@@ -6,9 +6,17 @@ box::use(
   shinipsum[...],
 )
 box::use(
+<<<<<<< Updated upstream
   app/logic/b_explore_utils[get_random_ggplot,
                             helpButton,
                             makeHeaders],
+=======
+  app/logic/b_explore_utils[
+    get_exp_plotly, get_enrich_plot, get_upset_plot, get_volcano, get_heatmap,
+    helpButton, makeHeaders,
+  ],
+  app/logic/db_utils,
+>>>>>>> Stashed changes
 )
 
 #'@export
@@ -114,8 +122,7 @@ ui <- function(id) {
                 fluidRow(
                   column(
                     width = 12,
-                    uiOutput(ns("volcanoHtml")),
-                    plotOutput(ns("volcanoPlot"))
+                    plotOutput(ns("volcanoPlot"), height = "600px")
                   )
                 )
               ),
@@ -149,8 +156,7 @@ ui <- function(id) {
                 fluidRow(
                   column(
                     width = 12,
-                    uiOutput(ns("heatmapHtml")),
-                    plotOutput(ns("heatmap"))
+                    plotOutput(ns("heatmap"),height = "500px")
 
                   )
                 ),
@@ -232,6 +238,8 @@ ui <- function(id) {
         ))))
 }
 
+
+
 #-------------------------------------------------------
 # SERVER
 #-------------------------------------------------------
@@ -256,6 +264,7 @@ server <- function(id) {
       get_random_ggplot(input$selectStudy)
     })
 
+<<<<<<< Updated upstream
 # NOTE -- can later be converted to:
 # create_exp_plot(input$selectStudy, input$selectContrast, input$selectNorm)
 
@@ -271,25 +280,27 @@ server <- function(id) {
     output$volcanoPlot <- renderPlot({
       get_random_ggplot(input$selectStudy)
     })
+=======
+#----------------------- VOLCANO PLOT
 
-    output$volcanoHtml <- renderUI({
-      string <- paste0(
-        input$selectStudy, input$selectContrast
-      )
-      string
+    output$volcanoPlot <- renderPlot({
+      req(input$selectStudy, input$selectContrast, current_gene())
+>>>>>>> Stashed changes
+
+      get_volcano(input$selectStudy, input$selectContrast, current_gene())
     })
 
 #----------------------- HEATMAP
 
     output$heatmap <- renderPlot({
+<<<<<<< Updated upstream
       get_random_ggplot(input$selectStudy)
     })
+=======
+      req(input$selectStudy, input$selectContrast, input$selectNormHeatmap)
+>>>>>>> Stashed changes
 
-    output$heatmapHtml <- renderUI({
-      string <- paste0(
-        input$selectStudy, input$selectContrast, input$selectNormHeatmap
-      )
-      string
+      get_heatmap(input$selectStudy, input$selectContrast, input$selectNormHeatmap)
     })
 
 #----------------------- PATHWAY ANALYSIS
@@ -308,6 +319,7 @@ server <- function(id) {
 #----------------------- COMPARISON
 
     output$upsetPlot <- renderPlot({
+<<<<<<< Updated upstream
       get_random_ggplot(input$selectStudy)
     })
 
@@ -318,5 +330,12 @@ server <- function(id) {
       string
     })
 
+=======
+      req(input$selectStudy, input$upsetSelect)
+
+      get_upset_plot(input$selectStudy, input$upsetSelect)
+    })
+
+>>>>>>> Stashed changes
   })
 }

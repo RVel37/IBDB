@@ -7,24 +7,24 @@ box::use(
 #'@export
 DownloadPageContents <- function() {
   md <- paste0("
-  ## LiverDB data
-  
-  Code used to process the data seen in LiverDB is available in
-  the LiverDB <a href='https://github.com/Bishop-Laboratory/LiverDB/' target='_blank'>GitHub repository</a>.
+  ## IBDB data
 
-  
+  Code used to process the data seen in LiverDB is available in
+  the IBDB <a href='https://github.com/RVel37/IBDB' target='_blank'>GitHub repository</a>.
+
+
   Data are stored on a publicly-accessible AWS bucket and can be downloaded in bulk
   via the following command (assumes you have AWS CLI installed):
-  
+
   ```shell
   aws s3 sync --no-sign-request s3://liverdb-data/ liverdb-data/
   ```
-  
+
   <details>
   <summary><strong>Data details</strong></summary>
-  
+
   <br>
-  
+
   * **metadata.csv**
     - A CSV file detailing the samples in the dataset
     - Structure:
@@ -46,7 +46,7 @@ DownloadPageContents <- function() {
       * *study_id*
         - The GEO ID for the study from which data were derived
       * *numerator*
-        - In DGE analysis, the numerator 
+        - In DGE analysis, the numerator
       * *denominator*
         - In DGE analysis, the denominator
   * **GSE126848_degs.csv.gz** and **GSE135251_degs.csv.gz**
@@ -63,7 +63,7 @@ DownloadPageContents <- function() {
       * *FDR*
         - The significance of the differential gene expression, with multiple testing correction
   * **GSE126848_gene_exp.csv.gz** and **GSE135251_gene_exp.csv.gz**
-    - GZ-compressed CSV files containing the expression levels for each gene within each sample. 
+    - GZ-compressed CSV files containing the expression levels for each gene within each sample.
     - Structure:
       * *gene_id*
         - Ensembl gene ID
@@ -84,7 +84,7 @@ DownloadPageContents <- function() {
       * *Term*
         - KEGG pathway analyzed
       * *Overlap*
-        - Proportion of genes from tested 
+        - Proportion of genes from tested
       * *P.value*
         - P value from enrichment test
       * *Adjusted.P.value*
@@ -105,7 +105,7 @@ DownloadPageContents <- function() {
         - DEG type on which enrichment was calculated (over-expressed or under-expressed)
   </details>
   ")
-  
+
   tagList(
     fluidRow(
       column(
