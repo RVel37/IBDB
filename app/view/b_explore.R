@@ -1,22 +1,17 @@
 box::use(
+  dplyr[filter, pull, row_number],
+  DT,
+  plotly,
   shiny[...],
-  DT[renderDT,DTOutput],
-  dplyr[filter],
   shinycssloaders[withSpinner],
   shinipsum[...],
 )
 box::use(
-<<<<<<< Updated upstream
-  app/logic/b_explore_utils[get_random_ggplot,
-                            helpButton,
-                            makeHeaders],
-=======
   app/logic/b_explore_utils[
     get_exp_plotly, get_enrich_plot, get_upset_plot, get_volcano, get_heatmap,
-    helpButton, makeHeaders,
+      helpButton, makeHeaders,
   ],
   app/logic/db_utils,
->>>>>>> Stashed changes
 )
 
 #'@export
@@ -43,24 +38,20 @@ ui <- function(id) {
             ),
             fluidRow(
               column(
-                6,
 # GSE drop-down -----------------------------
+                width = 6,
                 selectInput(
                   inputId = ns("selectStudy"),
                   label = "Study",
-                  selected = "line",
-                  choices = c("line", "bin2d", "contour", "density")),
-
+                  selected = "GSE83687",
+                  choices = c("GSE83687", "GSE112057", "GSE123141")
+                ),
               ),  #here will go the uioutput (study link)
 
 # study contrasts drop-down ------------------
               column(
                 width = 6,
-                selectInput(
-                  inputId = ns("selectContrast"),
-                  label = "Contrast",
-                  selected = "Cont1",
-                  choices = c("Cont1", "Cont2")),
+                uiOutput(ns("UIselectContrast"))
               )
             ),
             hr(),
@@ -72,7 +63,7 @@ ui <- function(id) {
 # Results table ----------------------------
                 h3("Results Table"),
                 p("IBD RNA-Seq DEG analysis results."),
-                withSpinner(DTOutput(ns("degTable")))
+                withSpinner(DT$DTOutput(ns("degTable")))
               )
             )
           )
@@ -101,8 +92,7 @@ ui <- function(id) {
                   message=paste0("Gene count plots for samples in the selected study.")
                 ),
                 hr(),
-                uiOutput(ns("expHtml")),
-                plotOutput(ns("expPlot"))
+                plotly$plotlyOutput(ns("expPlot"), height = "500px")
               ),
 # Volcano plot----------------------------
               tabPanel(
@@ -182,7 +172,7 @@ ui <- function(id) {
                   column(
                     width = 12,
                     selectInput(
-                      inputId = "selectEM",
+                      inputId = ns("selectEM"),
                       choices = c("Combined.Score", "Odds.Ratio", "Padj (-log10)"),
                       selected = "Combined.Score",
                       label = "Enrichment Metric"
@@ -191,8 +181,7 @@ ui <- function(id) {
                 fluidRow(
                   column(
                     width = 12,
-                    uiOutput(ns("enrichHtml")),
-                    plotOutput(ns("enrichPlot"))
+                    plotOutput(ns("enrichPlot"), height = "500px")
                     )
                   )
                 ),
@@ -218,7 +207,7 @@ ui <- function(id) {
                   column(
                     width = 12,
                     selectInput(
-                      inputId = "upsetSelect",
+                      inputId = ns("upsetSelect"),
                       choices = c("Over-expressed", "Under-expressed"),
                       selected = "Over-expressed",
                       label = "DEG type"
@@ -228,8 +217,7 @@ ui <- function(id) {
                 fluidRow(
                   column(
                     width = 12,
-                    uiOutput(ns("upsetHtml")),
-                    plotOutput(ns("upsetPlot"))
+                    plotOutput(ns("upsetPlot"), height = "500px")
                   )
                 ),
                 br()
@@ -247,10 +235,54 @@ ui <- function(id) {
 #'@export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
+    # Reactive contrast selector
+    output$UIselectContrast <- renderUI({
+      study <- input$selectStudy
+
+      contrasts <- db_utils$get_contrasts(study)
+
+      selectInput(
+        inputId = ns("selectContrast"),
+        label = "Contrast (Numerator vs. Denominator)",
+        selected = contrasts[1],
+        choices = contrasts
+      )
+    })
+
+    # Load DEGs dataframe
+    degs_df <- reactive({
+      db_utils$get_deg_df(input$selectStudy, input$selectContrast)
+    })
 
     # DEG results table
-    output$degTable <- DT::renderDT({
-      random_DT(10,3)
+    output$degTable <- DT$renderDT(server = TRUE,{
+      req(input$selectStudy, input$selectContrast)
+
+      degs_df() %>%
+        DT$datatable(
+          selection = list(mode = "single", selected = 1),
+          rownames = FALSE, escape = FALSE,
+          colnames = c("Gene", "Fold Change (log2)", "Adjusted p-value"),
+          options = list(pageLength = 8, scrollX = TRUE)
+        ) %>%
+        DT$formatSignif(2:3, digits = 5)
+    })
+
+    # Row selector: finds the gene name from the row selected in the DEGs DT
+    current_gene <- reactive({
+      req(input$degTable_rows_selected)
+
+      selected_row <- ifelse(
+        is.null(input$degTable_rows_selected), 1, input$degTable_rows_selected
+      )
+
+      gene <- degs_df() %>%
+        filter(row_number() == selected_row) %>%
+        pull(gene_name)
+
+      return(gene)
     })
 
 
@@ -260,32 +292,16 @@ server <- function(id) {
 
 #----------------------- EXPRESSION PLOT
 
-    output$expPlot <- renderPlot({
-      get_random_ggplot(input$selectStudy)
+    output$expPlot <- plotly$renderPlotly({
+      req(input$selectStudy, input$selectNormExp, current_gene())
+
+      get_exp_plotly(input$selectStudy, input$selectNormExp, current_gene())
     })
 
-<<<<<<< Updated upstream
-# NOTE -- can later be converted to:
-# create_exp_plot(input$selectStudy, input$selectContrast, input$selectNorm)
-
-    output$expHtml <- renderUI({
-      string <- paste0(
-        input$selectStudy, input$selectContrast, input$selectNormExp
-      )
-      string
-    })
-
-#----------------------- VOLCANO PLOT
-
-    output$volcanoPlot <- renderPlot({
-      get_random_ggplot(input$selectStudy)
-    })
-=======
 #----------------------- VOLCANO PLOT
 
     output$volcanoPlot <- renderPlot({
       req(input$selectStudy, input$selectContrast, current_gene())
->>>>>>> Stashed changes
 
       get_volcano(input$selectStudy, input$selectContrast, current_gene())
     })
@@ -293,12 +309,7 @@ server <- function(id) {
 #----------------------- HEATMAP
 
     output$heatmap <- renderPlot({
-<<<<<<< Updated upstream
-      get_random_ggplot(input$selectStudy)
-    })
-=======
       req(input$selectStudy, input$selectContrast, input$selectNormHeatmap)
->>>>>>> Stashed changes
 
       get_heatmap(input$selectStudy, input$selectContrast, input$selectNormHeatmap)
     })
@@ -306,36 +317,19 @@ server <- function(id) {
 #----------------------- PATHWAY ANALYSIS
 
     output$enrichPlot <- renderPlot({
-      get_random_ggplot(input$selectStudy)
+      req(input$selectStudy, input$selectContrast, input$selectEM)
+
+      get_enrich_plot(input$selectStudy, input$selectContrast, input$selectEM)
     })
 
-    output$heatmapHtml <- renderUI({
-      string <- paste0(
-        input$selectStudy, input$selectContrast, input$selectEM
-      )
-      string
-    })
 
 #----------------------- COMPARISON
 
     output$upsetPlot <- renderPlot({
-<<<<<<< Updated upstream
-      get_random_ggplot(input$selectStudy)
-    })
-
-    output$upsetHtml <- renderUI({
-      string <- paste0(
-        input$selectStudy, input$selectContrast, input$upsetSelect
-      )
-      string
-    })
-
-=======
       req(input$selectStudy, input$upsetSelect)
 
       get_upset_plot(input$selectStudy, input$upsetSelect)
     })
 
->>>>>>> Stashed changes
   })
 }

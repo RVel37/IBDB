@@ -1,17 +1,13 @@
 box::use(
+  ComplexHeatmap,
+  DBI,
+  dplyr[...],
+  ggplot2[...],
+  grid,
+  plotly,
+  prompter[add_prompt],
   shinipsum[random_ggplot],
   shiny[...],
-<<<<<<< Updated upstream
-  prompter[add_prompt]
-)
-
-# ------------------------ plotting
-#'@export
-get_random_ggplot <- function(plot_type) {
-  random_ggplot(plot_type)
-}
-
-=======
   tibble[column_to_rownames],
   tidyr[pivot_longer, pivot_wider],
   )
@@ -263,7 +259,6 @@ get_upset_plot <- function(study, deg_type) {
 }
 
 
->>>>>>> Stashed changes
 # ------------------------ ? button
 #'@export
 helpButton <- function(message) {
