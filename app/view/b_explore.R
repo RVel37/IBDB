@@ -9,8 +9,7 @@ box::use(
 box::use(
   app/logic/b_explore_utils[
     get_exp_plotly, get_enrich_plot, get_upset_plot, get_volcano, get_heatmap,
-      helpButton, makeHeaders,
-  ],
+      ],
   app/logic/db_utils,
 )
 
@@ -87,7 +86,7 @@ ui <- function(id) {
                   selected = "CPM",
                   choices = c("CPM", "TPM", "RPKM")
                 ),
-                makeHeaders(
+                db_utils$makeHeaders(
                   title = "Gene counts ",
                   message=paste0("Gene count plots for samples in the selected study.")
                 ),
@@ -102,7 +101,7 @@ ui <- function(id) {
                   column(
                     width = 6,
                     hr(),
-                    makeHeaders(
+                    db_utils$makeHeaders(
                       title = "Volcano plot ",
                       message=paste0("Volcano plot showing the differential gene expression results.")
                     ),
@@ -125,7 +124,7 @@ ui <- function(id) {
                   column(
                     width = 6,
                     hr(),
-                    makeHeaders(
+                    db_utils$makeHeaders(
                       title = "Heatmap ",
                       message = paste0("Heatmap of top DEG count plots for samples in the selected study.")
                     ),
@@ -161,7 +160,7 @@ ui <- function(id) {
                   column(
                     width = 6,
                     hr(),
-                    makeHeaders(
+                    db_utils$makeHeaders(
                       title = "KEGG enrichment ",
                       message=paste0("Heatmap of top hits from KEGG pathway enrichment (via 'enrichr' web service) in over- and under-expressed genes.")
                     ),
@@ -196,7 +195,7 @@ ui <- function(id) {
                   column(
                     width = 6,
                     hr(),
-                    makeHeaders(
+                    db_utils$makeHeaders(
                       title = "DEG comparison ",
                       message=paste0("UpSet plot comparing over- and under-expressed genes between studies.")
                     ),

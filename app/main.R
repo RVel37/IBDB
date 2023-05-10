@@ -1,8 +1,8 @@
 box::use(
-  shiny[navbarPage, tabPanel, moduleServer, NS,
-        renderText, tags, textOutput, tagList, HTML,icon],
+  memuse,
+  shiny[...],
   shinythemes[shinytheme]
-  )
+)
 
 box::use(
   app/view/a_home,
@@ -22,18 +22,18 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
 
-tagList(
+  tagList(
 
-navbarPage(
-  theme = shinytheme("yeti"),
-  "IBDB",
-  tabPanel ("Home", icon = icon("home"), a_home$ui(ns("home"))),
-  tabPanel ("Explore", icon = icon('table'), b_explore$ui(ns("explore"))),
-  tabPanel ("Download", icon = icon('download'), c_download$ui(ns("download"))),
-  tabPanel ("Documentation",icon = icon('file-alt'),d_documentation$ui(ns("documentation")))
-  ),
+    navbarPage(
+      theme = shinytheme("yeti"),
+      "IBDB",
+      tabPanel ("Home", icon = icon("home"), a_home$ui(ns("home"))),
+      tabPanel ("Explore", icon = icon('table'), b_explore$ui(ns("explore"))),
+      tabPanel ("Download", icon = icon('download'), c_download$ui(ns("download"))),
+      tabPanel ("Documentation",icon = icon('file-alt'),d_documentation$ui(ns("documentation")))
+    ),
 
-tags$footer(HTML(footerHTML()))
+    tags$footer(HTML(footerHTML()))
 
   )
 }
@@ -46,7 +46,19 @@ tags$footer(HTML(footerHTML()))
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+
+    # Print stats every 10000ms
+    observe({
+      invalidateLater(10000, session)
+      mem <- memuse$Sys.meminfo()
+      total <- mem$totalram
+      used <- total - mem$freeram
+      print(paste0("Memory usage: ", used, " / ", total))
+    },
+    priority = 1000)
+
     b_explore$server("explore")
+    c_download$server("download")
 
   })
 }

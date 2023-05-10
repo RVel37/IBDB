@@ -9,7 +9,7 @@ DownloadPageContents <- function() {
   md <- paste0("
   ## IBDB data
 
-  Code used to process the data seen in LiverDB is available in
+  Code used to process the data seen in IBDB is available in
   the IBDB <a href='https://github.com/RVel37/IBDB' target='_blank'>GitHub repository</a>.
 
 
@@ -17,7 +17,7 @@ DownloadPageContents <- function() {
   via the following command (assumes you have AWS CLI installed):
 
   ```shell
-  aws s3 sync --no-sign-request s3://liverdb-data/ liverdb-data/
+ aws s3 cp s3://ibddb-data.s3.us-west-2.amazonaws.com/ ibdb-data/
   ```
 
   <details>

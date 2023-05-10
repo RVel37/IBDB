@@ -6,7 +6,6 @@ box::use(
   grid,
   plotly,
   prompter[add_prompt],
-  shinipsum[random_ggplot],
   shiny[...],
   tibble[column_to_rownames],
   tidyr[pivot_longer, pivot_wider],
@@ -119,7 +118,11 @@ get_heatmap <- function(study, contrast, norm) {
   norm_table <- paste0(study, "_", tolower(norm))
   pair <- strsplit(contrast, " vs. ")[[1]]
 
+  num <- pair[1]
+  dem <- pair[2]
+
   plotted_genes <- tbl(conn, deg_table) %>%
+    filter(numerator == num & denominator == dem) %>%
     left_join(tbl(conn, "ens2sym"), by = "gene_id") %>%
     mutate(gene_name = case_when(is.na(gene_name) ~ gene_id,TRUE ~ gene_name
     )) %>%
@@ -129,18 +132,18 @@ get_heatmap <- function(study, contrast, norm) {
       logFC > 1 ~ "Over-expressed",
       logFC < -1 ~ "Under-expressed"
     )) %>%
-    collect() %>%
     filter(sigcond %in% c("Over-expressed", "Under-expressed")) %>%
-    arrange(logFC) %>%
-    filter(row_number() > max(row_number()) - 15 | row_number() <= 15) %>%
-    pull(gene_name)
+    group_by(sigcond) %>%
+    slice_min(order_by = FDR, n = 12) %>%
+    collect() %>%
+    pull (gene_name)
 
 
   values_table <- tbl(conn, norm_table) %>%
     left_join(tbl(conn, "ens2sym"), by = "gene_id") %>%
-    collect() %>%
     pivot_longer(contains("SRR")) %>%
     rename(sample_id = name) %>%
+    collect() %>%
     left_join(
       tbl(conn, "metadata") %>% select(sample_id, condition) %>% collect(),
       by = "sample_id"
@@ -148,12 +151,15 @@ get_heatmap <- function(study, contrast, norm) {
     filter(condition == pair[[1]] | condition == pair[[2]]) %>%
     filter(gene_name %in% plotted_genes)
 
+
   mat <- pivot_wider(
     data = values_table,
     id_cols = gene_name, names_from = sample_id, values_from = value
     ) %>%
     column_to_rownames("gene_name") %>%
     as.matrix()
+
+  print(mat)
 
   annot <- values_table %>%
     select(sample_id, condition) %>%
@@ -207,10 +213,10 @@ get_enrich_plot <- function(study, contrast, metric) {
 
   DBI$dbDisconnect(conn)
 
-  heatmap_obj <- ComplexHeatmap$Heatmap(
+  heatmap_obj <- ComplexHeatmap$pheatmap(
     mat,
     name = metric,
-    column_names_rot = 0,
+    angle_col = "0",
   )
 
   DBI$dbDisconnect(conn)
@@ -256,24 +262,4 @@ get_upset_plot <- function(study, deg_type) {
   DBI$dbDisconnect(conn)
 
   return(plot_obj)
-}
-
-
-# ------------------------ ? button
-#'@export
-helpButton <- function(message) {
-  return(
-    add_prompt(
-      ui_element = span(HTML('<i class="fa fa-question-circle"></i>')),
-      message = message, position = "right"
-    )
-  )
-}
-
-# ------------------------ Make headers
-#'@export
-makeHeaders <- function(title, message, fs=1.3) {
-  tagList(
-    span(span(title, style=paste0("font-size: ", fs, "em;")), helpButton(message))
-  )
 }
