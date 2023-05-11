@@ -151,15 +151,12 @@ get_heatmap <- function(study, contrast, norm) {
     ) %>%
     filter(condition == pair[[1]] | condition == pair[[2]])
 
-
   mat <- pivot_wider(
     data = values_table,
     id_cols = gene_name, names_from = sample_id, values_from = value
     ) %>%
     column_to_rownames("gene_name") %>%
     as.matrix()
-
-  print(mat)
 
   annot <- values_table %>%
     select(sample_id, condition) %>%

@@ -58,7 +58,6 @@ server <- function(id) {
     priority = 1000)
 
     b_explore$server("explore")
-   # c_download$server("download")
 
   })
 }
