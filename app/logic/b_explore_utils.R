@@ -141,6 +141,7 @@ get_heatmap <- function(study, contrast, norm) {
 
   values_table <- tbl(conn, norm_table) %>%
     left_join(tbl(conn, "ens2sym"), by = "gene_id") %>%
+    filter(gene_name %in% plotted_genes) %>%
     pivot_longer(contains("SRR")) %>%
     rename(sample_id = name) %>%
     collect() %>%
@@ -148,8 +149,7 @@ get_heatmap <- function(study, contrast, norm) {
       tbl(conn, "metadata") %>% select(sample_id, condition) %>% collect(),
       by = "sample_id"
     ) %>%
-    filter(condition == pair[[1]] | condition == pair[[2]]) %>%
-    filter(gene_name %in% plotted_genes)
+    filter(condition == pair[[1]] | condition == pair[[2]])
 
 
   mat <- pivot_wider(
