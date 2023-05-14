@@ -6,7 +6,8 @@ box::use(
 
 #'@export
 DownloadPageContents <- function() {
-  md <- paste0("
+  # --- Page intro -------------------------------------------------------------
+  intro <- "
   ## IBDB data
 
   Code used to process the data seen in IBDB is available in
@@ -17,11 +18,24 @@ DownloadPageContents <- function() {
   via the following command (assumes you have AWS CLI installed):
 
   ```shell
- aws s3 cp s3://ibddb-data.s3.us-west-2.amazonaws.com/ ibdb-data/
+  aws s3 cp s3://ibddb-data.s3.us-west-2.amazonaws.com/ ibdb-data/
   ```
+  "
 
+  # --- Download links ---------------------------------------------------------
+  links <- "
+  ## Download Links
+  - [file_name.zip](https://www.fake-link.com)
+  - [file_name.zip](https://www.fake-link.com)
+  - [file_name.zip](https://www.fake-link.com)
+  - [file_name.zip](https://www.fake-link.com)
+  "
+
+  # --- File details ---------------------------------------------------------
+  details <- "
+  ---
   <details>
-  <summary><strong>Data details</strong></summary>
+  <summary><strong>Data details (click to unfold)</strong></summary>
 
   <br>
 
@@ -104,16 +118,17 @@ DownloadPageContents <- function() {
       * *group*
         - DEG type on which enrichment was calculated (over-expressed or under-expressed)
   </details>
-  ")
+  "
 
+  # --- Shiny layout -----------------------------------------------------------
   tagList(
     fluidRow(
       column(
         width = 12,
-        shiny::markdown(md),
-        DT::dataTableOutput('downloadLinks')
+        markdown(intro),
+        markdown(links),
+        markdown(details)
       )
-    ),
-    br()
+    )
   )
 }

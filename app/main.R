@@ -33,7 +33,7 @@ ui <- function(id) {
       tabPanel ("Documentation",icon = icon('file-alt'),d_documentation$ui(ns("documentation")))
     ),
 
-    tags$footer(HTML(footerHTML()))
+    # tags$footer(HTML(footerHTML()))
 
   )
 }

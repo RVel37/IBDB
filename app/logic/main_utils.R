@@ -9,7 +9,7 @@ footerHTML <- function() {
         <a href='http://heartlncrna.github.io/' target='_blank'>heartlncrna</a>
         <span>&nbsp</span>
         <a href='https://github.com/RVel37/IBDB' target='_blank'>
-          <img src='GitHub-Mark-Light-64px.png' height='20'>
+          <img src='static/GitHub-Mark-64px.png' height='20'>
         </a>
       </div>
     </footer>
