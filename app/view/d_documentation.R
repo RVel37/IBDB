@@ -7,8 +7,7 @@ ui <- function(id) {
   ns <- NS(id)
   tabPanel(
     title = "Documentation",
-    id = "docs-tab"
-
-    #includeHTML("www/documentation.html")
-    )
+    id = "docs-tab",
+    includeHTML("app/static/documentation.html")
+  )
 }

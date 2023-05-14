@@ -6,12 +6,11 @@ box::use(
 #'@export
 ui <- function(id) {
   ns <- NS(id)
-  
+
   tabPanel(
-  title = "Home",
-  id = "home-tab",
-  value = "aboutTab",
-  
-  fluidPage(br(), includeHTML("www/home.html"))
+    title = "Home",
+    id = "home-tab",
+    value = "aboutTab",
+    fluidPage(br(), includeHTML("app/static/home.html"))
   )
 }
