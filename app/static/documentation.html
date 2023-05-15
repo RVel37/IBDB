@@ -1,0 +1,164 @@
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><em>IBDB</em> Documentation</h1>
+<h3 class="subtitle">v1.0.0</h3>
+<h4 class="date">2023-05-04</h4>
+
+</div>
+
+
+<p><img src="static/logo.png" style="border: none; float: right;" align="right"
+width="360" /></p>
+<p><strong>IBDB</strong> is a web database for <strong>accessing and
+exploring IBD expression data.</strong> <br> <strong>IBDB</strong> is the
+work of the <a href="https://heartlncrna.github.io/"
+target="_blank">Uchida laboratory</a>, Center for RNA Medicine, Aalborg
+University, and the <a href="http://www.bioresnet.org/"
+target="_blank">Bioinformatics Research Network</a>.</p>
+<p>Key features:</p>
+<ol style="list-style-type: decimal">
+<li><p>View transcriptomic data across three IBD studies</p></li>
+<li><p>Explore differential gene expression results</p></li>
+<li><p>Download standardized and reprocessed datasets</p></li>
+</ol>
+<div id="datasets" class="section level2">
+
+<hr>
+
+<h2>Datasets</h2>
+<p>The current version of <strong>IBDB</strong> contains the following
+datasets:</p>
+<p>[1] GSE83687: A functional genomics predictive network model
+identifies regulators of inflammatory bowel disease: Mount Sinai
+Hospital (MSH) Population Specimen Collection and Profiling of
+Inflammatory Bowel Disease (<a
+href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE83687"
+class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE83687</a>)</p>
+<p>[2] GSE112057: Whole Blood Transcriptome Profiling in Juvenile
+Idiopathic Arthritis and Inflammatory Bowel Disease (<a
+href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE112057"
+class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE112057</a>)</p>
+<p>[3] GSE123141: Intestinal macrophage mRNA sequencing of patients with
+colonic inflammatory bowel disease and a cohort of healthy controls (<a
+href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123141"
+class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE123141</a>)</p>
+</div>
+<div id="ibdb-interfaces" class="section level2">
+
+<hr>
+
+<h2>IBDB Interfaces</h2>
+
+<h3>Results and Expression Plot</h3>
+<div class="figure">
+<img src="static/usage_ibdb_1.png" style="border: none; float: none;"
+align="right" width="1000" alt="" />
+<p class="caption"><strong>The ‘Results’ page interface</strong>.
+(<strong>A</strong>) Controls the study which is displayed.
+(<strong>B</strong>) Controls which contrast is displayed for plots that
+subsets by contrast. (<strong>C</strong>) The Results table which
+displays the results of differential gene expression analysis for each
+gene in the study. Selecting a row will change the output in
+<strong>E</strong>. (<strong>D</strong>) Selector which controls the
+type of expression data displayed in <strong>E</strong>.
+(<strong>E</strong>) Interactive box plots showing the distribution of
+gene expression values across samples within each biological condition
+in the selected study.</p>
+</div>
+
+<h3>DGE Volcano Plot</h3>
+<div class="figure">
+<img src="static/usage_ibdb_2.png" style="border: none; float: none;"
+align="right" width="1000" alt="" />
+<p class="caption"><strong>DGE volcano plots</strong>. This interface
+displays the results of DGE analysis as a volcano plot (highlighted).
+Selecting a row in the ‘Results Table’ will cause the corresponding gene
+to be highlighted in the volcano plot.</p>
+</div>
+
+<h3>DGE Heatmap</h3>
+<div class="figure">
+<img src="static/usage_ibdb_3.png" style="border: none; float: none;"
+align="right" width="1000" alt="" />
+<p class="caption"><strong>DGE Heatmap</strong>. This interface displays
+the top hits from DGE analysis as a heatmap for the selected study.</p>
+</div>
+
+<h3>Pathway Enrichment Plot</h3>
+<div class="figure">
+<img src="static/usage_ibdb_4.png" style="border: none; float: none;"
+align="right" width="1000" alt="" />
+<p class="caption"><strong>Pathway enrichment plot</strong>. This
+interface displays the top results from KEGG pathway analysis as a
+heatmap. A drop down is available for controlling the displayed
+enrichment metric. “Combined.Score” - a combination of the p value from
+Fisher’s exact test and z score from expected enrichment; “Odds.Ratio” -
+odds ratio from Fisher’s exist test; “Padj (-log10)” - Adjusted p value
+from enrichment analysis, log transformed. For more info, see the <a
+href="https://maayanlab.cloud/Enrichr/">enrichr</a> documentation.</p>
+</div>
+
+<h3>DGE UpSet Plot</h3>
+<div class="figure">
+<img src="static/usage_ibdb_5.png" style="border: none; float: none;"
+align="right" width="1000" alt="" />
+<p class="caption"><strong>DGE UpSet Plot</strong>. This interface
+displays an UpSet plot which is used to determine the number of DEGs
+seen mutually across study/contrast pairs. A drop down menu is used to
+control whether Over- or Under-expressed DEGs are compared.</p>
+</div>
+</div>
+<div id="terminology" class="section level2">
+
+<hr>
+
+<h2>Terminology</h2>
+<ul>
+<li><em>DGE</em>: Differential Gene Expression
+<ul>
+<li>Differential Gene Expression refers to a significant difference in
+the expression of a gene between two conditions of interest. In this
+study, we calculated DGE using the <a
+href="https://bioconductor.org/packages/release/bioc/html/edgeR.html"
+target="_blank">edgeR</a> R/Bioconductor package.</li>
+</ul></li>
+<li><em>CPM</em>: Counts per Million
+<ul>
+<li>Read counts normalized by library size. In this case, they were
+normalized using the moderated counts-per-million method in <a
+href="https://bioconductor.org/packages/release/bioc/html/edgeR.html"
+target="_blank">egdeR</a>.</li>
+</ul></li>
+<li><em>TPM</em>: Transcripts per Million
+<ul>
+<li>Read counts normalized based on transcript length and read depth
+(different from RPKM). <a
+href="https://www.rna-seqblog.com/rpkm-fpkm-and-tpm-clearly-explained/"
+target="_blank">More info</a>.</li>
+</ul></li>
+<li><em>RPKM</em>: Reads Per Kilobase of transcript, per Million mapped
+reads
+<ul>
+<li>Read counts normalized based on transcript length and read depth. <a
+href="https://www.rna-seqblog.com/rpkm-fpkm-and-tpm-clearly-explained/"
+target="_blank">More info</a>.</li>
+</ul></li>
+</ul>
+</div>
+<div id="license-and-attribution" class="section level2">
+
+<hr>
+
+<h2>License and attribution</h2>
+<p>IBDB is licensed under an MIT license and we ask that you please cite
+IBDB in any published work like so:</p>
+<blockquote>
+<p>Ilieva et al., IBDB: a Knowledge Database for Protein-Coding and Long
+Non-Coding RNA Genes in Inflammatory Bowel Disease, 2023</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>

@@ -14,3 +14,7 @@ library(shinipsum)
 library(RSQLite)
 library(biomaRt)
 library(BiocManager)
+library(memuse)
+library(markdown)
+library(tidyverse)
+
